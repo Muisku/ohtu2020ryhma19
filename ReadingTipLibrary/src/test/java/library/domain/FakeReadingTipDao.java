@@ -11,18 +11,21 @@ import static org.junit.Assert.*;
 import library.dao.ReadingTipDao;
 import library.domain.ReadingTip;
 
-public class FakeReadingTipDaoTest implements ReadingTipDao {
+public class FakeReadingTipDao implements ReadingTipDao {
 
     List<ReadingTip> readingTips;
+    int nextId;
 
-    public FakeReadingTipDaoTest() {
+    public FakeReadingTipDao() {
         readingTips = new ArrayList<>();
+        nextId = 0;
     }
 
     @Override
     public void addTip(ReadingTip bookTip) throws Exception {
+        bookTip.setId(nextId);
         readingTips.add(bookTip);
-
+        nextId++;
     }
 
     @Override
@@ -33,7 +36,11 @@ public class FakeReadingTipDaoTest implements ReadingTipDao {
 
     @Override
     public void removeTip(String id) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (ReadingTip r : readingTips) {
+            if (r.getId() == Integer.parseInt(id)) {
+                readingTips.remove(r);
+            }
+        }
     }
 
     @Override
@@ -43,22 +50,47 @@ public class FakeReadingTipDaoTest implements ReadingTipDao {
 
     @Override
     public void modifyTip(String id, String title, String info1, String info2) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (ReadingTip r : readingTips) {
+            if (r.getId() == Integer.parseInt(id)) {
+                if (!title.isEmpty()) {
+                    r.setTitle(title);
+                }
+                if (!info1.isEmpty()) {
+                    r.setMoreInfo1(info1);
+                }
+                if (!info2.isEmpty()) {
+                    r.setMoreInfo1(info2);
+                }
+            }
+        }
     }
 
     @Override
     public ReadingTip getOneTip(String id) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (ReadingTip r : readingTips) {
+            if (r.getId() == Integer.parseInt(id)) {
+                return r;
+            }
+        }
+        return null;
     }
 
     @Override
     public void markAsRead(String id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (ReadingTip r : readingTips) {
+            if (r.getId() == Integer.parseInt(id)) {
+                r.setRead(1);
+            }
+        }
     }
 
     @Override
     public void markAsUnread(String id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (ReadingTip r : readingTips) {
+            if (r.getId() == Integer.parseInt(id)) {
+                r.setRead(0);
+            }
+        }
     }
     
     @Override

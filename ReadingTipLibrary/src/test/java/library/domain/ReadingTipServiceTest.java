@@ -17,7 +17,7 @@ import library.domain.ReadingTip;
 
 public class ReadingTipServiceTest {
 
-    FakeReadingTipDaoTest readingTip;
+    FakeReadingTipDao readingTip;
     ReadingTipService service;
     List<ReadingTip> readingTips;
 
@@ -27,7 +27,7 @@ public class ReadingTipServiceTest {
     @Before
     public void setUp() throws Exception {
         
-        readingTip = new FakeReadingTipDaoTest();
+        readingTip = new FakeReadingTipDao();
         service = new ReadingTipService();
         readingTips = new ArrayList<>();
         readingTip.addTip(new BookTip("First title"));
