@@ -18,7 +18,7 @@ public class FakeReadingTipDao implements ReadingTipDao {
 
     public FakeReadingTipDao() {
         readingTips = new ArrayList<>();
-        nextId = 0;
+        nextId = 1;
     }
 
     @Override
@@ -36,9 +36,9 @@ public class FakeReadingTipDao implements ReadingTipDao {
 
     @Override
     public void removeTip(String id) throws Exception {
-        for (ReadingTip r : readingTips) {
-            if (r.getId() == Integer.parseInt(id)) {
-                readingTips.remove(r);
+        for (int i = 0; i < readingTips.size(); i++) {
+            if (readingTips.get(i).getId() == Integer.parseInt(id)) {
+                readingTips.remove(i);
             }
         }
     }
@@ -59,7 +59,7 @@ public class FakeReadingTipDao implements ReadingTipDao {
                     r.setMoreInfo1(info1);
                 }
                 if (!info2.isEmpty()) {
-                    r.setMoreInfo1(info2);
+                    r.setMoreInfo2(info2);
                 }
             }
         }

@@ -27,7 +27,6 @@ public class ReadingTipServiceTest {
         readingTip.addTip(new BookTip("First title"));
         readingTip.addTip(new BookTip("Second title"));
         readingTip.addTip(new BookTip("Third title"));
-        readingTip.addTip(new BookTip("Dune"));
         
         service = new ReadingTipService(readingTip);
         
@@ -36,7 +35,7 @@ public class ReadingTipServiceTest {
     @Test
     public void atStartListContainsSetUpValues() throws Exception {
         List<ReadingTip> readingTips = service.browseReadingTips();
-        assertEquals(4, readingTips.size());
+        assertEquals(3, readingTips.size());
     }
 
     @Test
@@ -49,17 +48,26 @@ public class ReadingTipServiceTest {
     public void readingTipCanBeFound() throws Exception {
         assertEquals("First title", service.getOneTip("1").getTitle());
     }
+    
+    @Test
+    public void readingTipCanBeAdded() throws Exception {
+        service.createTip("book", "Title", "Writer", "1234");
+        ReadingTip r = service.getOneTip("4");
+        assertEquals(4, service.browseReadingTips().size());
+        assertEquals("Title", r.getTitle());
+    }
 
     @Test
     public void readingTipCanBeModified() throws Exception {
-        service.modifyTip("1", "book", "Herbert", "1234");
-        assertEquals("Herbert", service.getOneTip("1").getMoreInfo1());
+        service.modifyTip("1", "", "Herbert", "1234");
+        ReadingTip r = service.getOneTip("1");
+        assertEquals("Herbert", r.getMoreInfo1());
     }
     
     @Test
     public void readingTipCanBeDeleted() throws Exception {
         service.removeTip("1");
-        assertEquals(3, service.browseReadingTips().size());
+        assertEquals(2, service.browseReadingTips().size());
     }
     
     @Test
