@@ -5,7 +5,6 @@
  */
 package library.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -13,58 +12,64 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import library.domain.ReadingTip;
 
 public class ReadingTipServiceTest {
 
-    FakeReadingTipDao readingTip;
     ReadingTipService service;
-    List<ReadingTip> readingTips;
+    
 
     public ReadingTipServiceTest() {
     }
 
     @Before
     public void setUp() throws Exception {
-        
-        readingTip = new FakeReadingTipDao();
-        service = new ReadingTipService();
-        readingTips = new ArrayList<>();
+        FakeReadingTipDao readingTip = new FakeReadingTipDao();
         readingTip.addTip(new BookTip("First title"));
         readingTip.addTip(new BookTip("Second title"));
         readingTip.addTip(new BookTip("Third title"));
-        readingTips.add(new BookTip("Dune"));
-
+        readingTip.addTip(new BookTip("Dune"));
+        
+        service = new ReadingTipService(readingTip);
+        
     }
 
     @Test
     public void atStartListContainsSetUpValues() throws Exception {
-        List<ReadingTip> readingTips = readingTip.getAllTips();
-        assertEquals(3, readingTips.size());
+        List<ReadingTip> readingTips = service.browseReadingTips();
+        assertEquals(4, readingTips.size());
     }
 
     @Test
     public void readingTipContainsAllValues() throws Exception {
-        List<ReadingTip> readingTips = readingTip.getAllTips();
+        List<ReadingTip> readingTips = service.browseReadingTips();
 
     }
 
     @Test
-    public void readingTipContainsSpecificTip() throws Exception {
-        List<ReadingTip> readingTips = readingTip.getAllTips();
-
-        assertEquals(readingTips.get(0).getTitle(), "First title");
+    public void readingTipCanBeFound() throws Exception {
+        assertEquals("First title", service.getOneTip("1").getTitle());
     }
 
     @Test
-    public void anAuthorAndIsbnCanBeAddedForBook() throws Exception {
-        //readingTips.get(0).setMoreInfo1("Herbert");
-        //readingTips.get(0).setMoreInfo2("3105121");
-        // service.getOneTip("1");
-        readingTips.get(0).setMoreInfo1("Herbert");
-        readingTips.get(0).setMoreInfo2("1234");
-        //assertEquals(service.getOneTip("1").getMoreInfo1(), "herb");
-        assertEquals(readingTips.get(0).getMoreInfo2(), "1234");
+    public void readingTipCanBeModified() throws Exception {
+        service.modifyTip("1", "book", "Herbert", "1234");
+        assertEquals("Herbert", service.getOneTip("1").getMoreInfo1());
     }
     
+    @Test
+    public void readingTipCanBeDeleted() throws Exception {
+        service.removeTip("1");
+        assertEquals(3, service.browseReadingTips().size());
+    }
+    
+    @Test
+    public void readingTipCanBeMarkedAsReadAndUnread() throws Exception {
+        service.markAsRead("2");
+        ReadingTip r = service.getOneTip("2");
+        assertEquals(1, r.getRead());
+        
+        service.markAsUnread("2");
+        r = service.getOneTip("2");
+        assertEquals(0, r.getRead());
+    }
 }
