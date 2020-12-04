@@ -60,6 +60,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         } catch (Exception e) {
 
         }
+        conn.close();
         return readingTips;
     }
 
@@ -75,6 +76,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
             readingTips = createListFromResult(result);
         } catch (Exception e) {
         }
+        conn.close();
 
         if (readingTips.size() == 1) {
             return readingTips.get(0);
