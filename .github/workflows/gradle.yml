@@ -25,3 +25,13 @@ jobs:
       run: bash <(curl -s https://codecov.io/bash)
     - name: Checkstyle
       run: (cd ReadingTipLibrary; ./gradlew checkstyleMain)
+    - name: Archive checkstyle results
+      uses: actions/upload-artifact@v2
+      with:
+        name: checkstyle-report
+        path: ./ReadingTipLibrary/build/reports/checkstyle/main.html
+    - name: Archive test results
+      uses: actions/upload-artifact@v2
+      with:
+        name: test-report
+        path: ./ReadingTipLibrary/build/reports/tests/test/*
