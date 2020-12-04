@@ -18,7 +18,7 @@ public class ReadingTipService {
     public ReadingTipService() {
         this(new ReadingTipDatabaseDao("jdbc:sqlite:readingtip.db"));
     }
-    
+
     public ReadingTipService(ReadingTipDao rtd) {
         readingTipDao = rtd;
     }
@@ -31,7 +31,8 @@ public class ReadingTipService {
      * @param info1 The content of this field will depend on the type.
      * @param info2 The content of this field will depend on the type.
      */
-    public ReadingTip createTip(String type, String title, String info1, String info2) throws Exception {
+    public ReadingTip createTip(String type, String title, String info1, String info2)
+            throws Exception {
         ReadingTip rt = createTipWithType(type, title);
         rt.setMoreInfo1(info1);
         rt.setMoreInfo2(info2);
@@ -49,12 +50,11 @@ public class ReadingTipService {
         return tipList;
     }
 
-    
     public List<ReadingTip> searchTip(String searchTerm, String searchField) throws Exception {
         List<ReadingTip> tipList = readingTipDao.searchTip(searchTerm, searchField);
         return tipList;
     }
-    
+
     public ReadingTip getOneTip(String id) throws Exception {
         ReadingTip readingTip = readingTipDao.getOneTip(id);
         return readingTip;
@@ -63,25 +63,24 @@ public class ReadingTipService {
     public void removeTip(String id) throws Exception {
         readingTipDao.removeTip(id);
     }
-    
-    
-    public void modifyTip(String id, String newTitle, String newInfo1, String newInfo2) throws Exception {
+
+    public void modifyTip(String id, String newTitle, String newInfo1, String newInfo2)
+            throws Exception {
         readingTipDao.modifyTip(id, newTitle, newInfo1, newInfo2);
     }
-    
-    public void markAsRead(String id){
+
+    public void markAsRead(String id) {
         readingTipDao.markAsRead(id);
     }
-    
-    public void markAsUnread(String id){
+
+    public void markAsUnread(String id) {
         readingTipDao.markAsUnread(id);
     }
-    
+
     public void deleteDatabaseContents() {
         readingTipDao.deleteDatabaseContents();
     }
-    
-    
+
     private ReadingTip createTipWithType(String type, String title) {
 
         ReadingTip tip;

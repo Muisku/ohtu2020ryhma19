@@ -3,7 +3,7 @@ package library.ui;
 import java.util.List;
 import library.domain.ReadingTip;
 import library.domain.ReadingTipService;
-import library.io.IO;
+import library.io.Io;
 
 /**
  * The user interface.
@@ -11,10 +11,10 @@ import library.io.IO;
 public class ReadingTipUi {
 
     ReadingTipService service;
-    private IO io;
+    private Io io;
     private List<ReadingTip> searchResults;
 
-    public ReadingTipUi(IO io) {
+    public ReadingTipUi(Io io) {
         this.io = io;
     }
 
@@ -110,7 +110,8 @@ public class ReadingTipUi {
         printTypes();
         String type = io.readLine("What kind of reading tip is it?");
         String[] additionalInfo = askMoreInfoByType(type);
-        ReadingTip tip = service.createTip(type.toLowerCase(), title, additionalInfo[0], additionalInfo[1]);
+        ReadingTip tip = service.createTip(type.toLowerCase(), title,
+                additionalInfo[0], additionalInfo[1]);
 
         //io.print(tip.toString());
     }
@@ -170,7 +171,7 @@ public class ReadingTipUi {
     }
 
     private void searchTip() throws Exception {
-        
+
         String searchField;
 
         while (true) {
@@ -181,7 +182,7 @@ public class ReadingTipUi {
             if (!searchField.equals("error")) {
                 break;
             }
-            
+
             io.print("Invalid command!\n");
         }
 
@@ -192,7 +193,7 @@ public class ReadingTipUi {
     }
 
     private String fieldFromUserInput(String fieldOption) {
-        
+
         if (fieldOption.equals("t")) {
             return "title";
         } else if (fieldOption.equals("m")) {

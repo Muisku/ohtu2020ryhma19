@@ -17,14 +17,14 @@ import library.ui.*;
 public class Stepdefs {
     ReadingTipUi ui;
     List<String> inputLines;
-    StubIO io;
+    StubIo io;
     ReadingTipService service;
     
     
     @Before
     public void setup(){
         inputLines = new ArrayList<>();     
-        io = new StubIO(inputLines);
+        io = new StubIo(inputLines);
         ui = new ReadingTipUi(io);
         service = new ReadingTipService(new ReadingTipDatabaseDao("jdbc:sqlite:ReadingTipTest.db"));
     }
@@ -45,7 +45,7 @@ public class Stepdefs {
         inputLines.add(title);
         inputLines.add(type);
         
-        io = new StubIO(inputLines);
+        io = new StubIo(inputLines);
         ui = new ReadingTipUi(io);
         ui.start(service);
     }
@@ -69,7 +69,7 @@ public class Stepdefs {
     @When("all reading tips are listed")
     public void readingTipIsSaved() throws Exception {
         inputLines.add("L");
-        io = new StubIO(inputLines);
+        io = new StubIo(inputLines);
         ui = new ReadingTipUi(io);
         ui.start(service);        
     }
@@ -92,7 +92,7 @@ public class Stepdefs {
     public void readingTipIsDeleted(String id) throws Exception {
 	inputLines.add(id);
 
-	io = new StubIO(inputLines);
+	io = new StubIo(inputLines);
         ui = new ReadingTipUi(io);
         ui.start(service);
     }
@@ -111,7 +111,7 @@ public class Stepdefs {
     public void searchByTerm(String term) throws Exception {
         inputLines.add(term);
 
-        io = new StubIO(inputLines);
+        io = new StubIo(inputLines);
         ui = new ReadingTipUi(io);
         ui.start(service);
     }

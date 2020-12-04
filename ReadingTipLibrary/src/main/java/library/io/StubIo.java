@@ -3,13 +3,16 @@ package library.io;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StubIO implements IO {
+/**
+ * Prints output and receives input from tests.
+ */
+public class StubIo implements Io {
 
     private List<String> lines;
     private int i;
     private ArrayList<String> prints;
 
-    public StubIO(List<String> values) {
+    public StubIo(List<String> values) {
         this.lines = values;
         prints = new ArrayList<>();
     }
@@ -22,6 +25,11 @@ public class StubIO implements IO {
         return prints;
     }
 
+    /**
+     * Get input from user or test.
+     *
+     * @param prompt Ask input from user.
+     */
     public String readLine(String prompt) {
         print(prompt);
         if (i < lines.size()) {

@@ -75,7 +75,8 @@ public class PodcastTip implements ReadingTip {
 
     @Override
     public String toString() {
-        return "ID: " + id + "\nAuthor: " + author + "\nPodcast name: " + podcastName + "\nTitle: " + title + "\nType: " + type;
+        return "ID: " + id + "\nAuthor: " + author + "\nPodcast name: "
+                + podcastName + "\nTitle: " + title + "\nType: " + type;
     }
 
     @Override

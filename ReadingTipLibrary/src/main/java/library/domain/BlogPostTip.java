@@ -1,9 +1,10 @@
-
 package library.domain;
 
-/** A ReadingTip of type BlogPostTip. */
+/**
+ * A ReadingTip of type BlogPostTip.
+ */
 public class BlogPostTip implements ReadingTip {
-    
+
     private int id;
     private String title;
     private String author;
@@ -12,7 +13,7 @@ public class BlogPostTip implements ReadingTip {
     private String[] relatedCourses;
     private final String type = "blogpost";
     private int read;
-    
+
     public BlogPostTip(String title) {
         this.title = title;
     }
@@ -61,7 +62,8 @@ public class BlogPostTip implements ReadingTip {
     public String getMoreInfo2() {
         return url;
     }
-     @Override
+
+    @Override
     public void setRead(int read) {
         this.read = read;
     }
@@ -70,15 +72,16 @@ public class BlogPostTip implements ReadingTip {
     public int getRead() {
         return read;
     }
-    
+
     @Override
     public String toString() {
-        return "ID: " + id + "\nTitle: " + title + "\nAuthor: " + author + "\nURL: " + url + "\nType: " + type;
+        return "ID: " + id + "\nTitle: " + title + "\nAuthor: " + author
+                + "\nURL: " + url + "\nType: " + type;
     }
 
     @Override
     public int getId() {
-       return id;
+        return id;
     }
 
     @Override
@@ -86,5 +89,4 @@ public class BlogPostTip implements ReadingTip {
         this.id = id;
     }
 
-    
 }

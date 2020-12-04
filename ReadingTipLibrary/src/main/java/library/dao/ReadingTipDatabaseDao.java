@@ -115,26 +115,30 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     }
 
     @Override
-    public void modifyTip(String id, String newTitle, String newInfo1, String newInfo2) throws Exception {
+    public void modifyTip(String id, String newTitle, String newInfo1, String newInfo2)
+            throws Exception {
         Connection conn = DriverManager.getConnection(databaseAddress);
 
         try {
             if (!newTitle.isEmpty()) {
-                PreparedStatement stmt = conn.prepareStatement("UPDATE ReadingTip SET title = ? WHERE id = ?");
+                PreparedStatement stmt
+                        = conn.prepareStatement("UPDATE ReadingTip SET title = ? WHERE id = ?");
                 stmt.setString(1, newTitle);
                 stmt.setInt(2, Integer.parseInt(id));
                 stmt.executeUpdate();
             }
 
             if (!newInfo1.isEmpty()) {
-                PreparedStatement stmt = conn.prepareStatement("UPDATE ReadingTip SET info1 = ? WHERE id = ?");
+                PreparedStatement stmt
+                        = conn.prepareStatement("UPDATE ReadingTip SET info1 = ? WHERE id = ?");
                 stmt.setString(1, newInfo1);
                 stmt.setInt(2, Integer.parseInt(id));
                 stmt.executeUpdate();
             }
 
             if (!newInfo2.isEmpty()) {
-                PreparedStatement stmt = conn.prepareStatement("UPDATE ReadingTip SET info2 = ? WHERE id = ?");
+                PreparedStatement stmt
+                        = conn.prepareStatement("UPDATE ReadingTip SET info2 = ? WHERE id = ?");
                 stmt.setString(1, newInfo2);
                 stmt.setInt(2, Integer.parseInt(id));
                 stmt.executeUpdate();
@@ -192,7 +196,8 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     public void markAsRead(String id) {
         try {
             Connection conn = DriverManager.getConnection(databaseAddress);
-            PreparedStatement stmt = conn.prepareStatement("UPDATE ReadingTip SET read = 1 WHERE id = ?");
+            PreparedStatement stmt
+                    = conn.prepareStatement("UPDATE ReadingTip SET read = 1 WHERE id = ?");
             stmt.setInt(1, Integer.parseInt(id));
             stmt.executeUpdate();
             conn.close();
@@ -205,7 +210,8 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     public void markAsUnread(String id) {
         try {
             Connection conn = DriverManager.getConnection(databaseAddress);
-            PreparedStatement stmt = conn.prepareStatement("UPDATE ReadingTip SET read = 0 WHERE id = ?");
+            PreparedStatement stmt
+                    = conn.prepareStatement("UPDATE ReadingTip SET read = 0 WHERE id = ?");
             stmt.setInt(1, Integer.parseInt(id));
             stmt.executeUpdate();
             conn.close();
@@ -224,18 +230,18 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
 
     private String createStatementByField(String searchField, String searchTerm) {
         StringBuilder stmt = new StringBuilder();
-        
+
         stmt.append("SELECT * FROM ReadingTip where ");
-        
+
         if (!searchField.isEmpty()) {
-           stmt.append(searchField + " LIKE '%" + searchTerm + "%'"); 
+            stmt.append(searchField + " LIKE '%" + searchTerm + "%'");
         } else {
             stmt.append("type LIKE '%" + searchTerm + "%' OR ");
             stmt.append("title LIKE '%" + searchTerm + "%' OR ");
             stmt.append("info1 LIKE '%" + searchTerm + "%' OR ");
             stmt.append("info2 LIKE '%" + searchTerm + "%'");
         }
-        
+
         return stmt.toString();
     }
 

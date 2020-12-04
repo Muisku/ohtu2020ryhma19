@@ -72,6 +72,7 @@ public class VideoTip implements ReadingTip {
     public int getRead() {
         return read;
     }
+    
     @Override
     public String toString() {
         return "ID: " + id + "\nTitle: " + title + "\nURL: " + url + "\nType: " + type;
