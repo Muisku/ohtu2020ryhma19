@@ -66,5 +66,5 @@ public class ReadingTipServiceTest {
         //assertEquals(service.getOneTip("1").getMoreInfo1(), "herb");
         assertEquals(readingTips.get(0).getMoreInfo2(), "1234");
     }
-
+    
 }
