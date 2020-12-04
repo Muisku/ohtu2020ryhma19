@@ -76,6 +76,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
             readingTips = createListFromResult(result);
         } catch (Exception e) {
         }
+
         conn.close();
 
         if (readingTips.size() == 1) {
