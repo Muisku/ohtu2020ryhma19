@@ -51,11 +51,15 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     public List<ReadingTip> searchTip(String searchTerm, String searchField) throws Exception {
         Connection conn = DriverManager.getConnection(databaseAddress);
         List<ReadingTip> readingTips = new ArrayList<>();
-        String stmt = createStatementByField(searchField, searchTerm);
-        PreparedStatement p = conn.prepareStatement(stmt);
+        try {
+            String stmt = createStatementByField(searchField, searchTerm);
+            PreparedStatement p = conn.prepareStatement(stmt);
 
-        ResultSet result = p.executeQuery();
-        readingTips = createListFromResult(result);
+            ResultSet result = p.executeQuery();
+            readingTips = createListFromResult(result);
+        } catch (Exception e) {
+
+        }
         conn.close();
         return readingTips;
     }
@@ -64,11 +68,14 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     public ReadingTip getOneTip(String id) throws Exception {
         Connection conn = DriverManager.getConnection(databaseAddress);
         List<ReadingTip> readingTips = new ArrayList<>();
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM ReadingTip WHERE id = ?");
-        stmt.setInt(1, Integer.parseInt(id));
+        try {
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM ReadingTip WHERE id = ?");
+            stmt.setInt(1, Integer.parseInt(id));
 
-        ResultSet result = stmt.executeQuery();
-        readingTips = createListFromResult(result);
+            ResultSet result = stmt.executeQuery();
+            readingTips = createListFromResult(result);
+        } catch (Exception e) {
+        }
 
         conn.close();
 
@@ -77,7 +84,6 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         }
         return null;
     }
-    
 
     @Override
     public void addTip(ReadingTip readingTip) throws Exception {
@@ -97,7 +103,6 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
 
         conn.close();
     }
-    
 
     @Override
     public void removeTip(String id) throws Exception {
@@ -113,25 +118,29 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     public void modifyTip(String id, String newTitle, String newInfo1, String newInfo2) throws Exception {
         Connection conn = DriverManager.getConnection(databaseAddress);
 
-        if (!newTitle.isEmpty()) {
-            PreparedStatement stmt = conn.prepareStatement("UPDATE ReadingTip SET title = ? WHERE id = ?");
-            stmt.setString(1, newTitle);
-            stmt.setInt(2, Integer.parseInt(id));
-            stmt.executeUpdate();
-        }
+        try {
+            if (!newTitle.isEmpty()) {
+                PreparedStatement stmt = conn.prepareStatement("UPDATE ReadingTip SET title = ? WHERE id = ?");
+                stmt.setString(1, newTitle);
+                stmt.setInt(2, Integer.parseInt(id));
+                stmt.executeUpdate();
+            }
 
-        if (!newInfo1.isEmpty()) {
-            PreparedStatement stmt = conn.prepareStatement("UPDATE ReadingTip SET info1 = ? WHERE id = ?");
-            stmt.setString(1, newInfo1);
-            stmt.setInt(2, Integer.parseInt(id));
-            stmt.executeUpdate();
-        }
+            if (!newInfo1.isEmpty()) {
+                PreparedStatement stmt = conn.prepareStatement("UPDATE ReadingTip SET info1 = ? WHERE id = ?");
+                stmt.setString(1, newInfo1);
+                stmt.setInt(2, Integer.parseInt(id));
+                stmt.executeUpdate();
+            }
 
-        if (!newInfo2.isEmpty()) {
-            PreparedStatement stmt = conn.prepareStatement("UPDATE ReadingTip SET info2 = ? WHERE id = ?");
-            stmt.setString(1, newInfo2);
-            stmt.setInt(2, Integer.parseInt(id));
-            stmt.executeUpdate();
+            if (!newInfo2.isEmpty()) {
+                PreparedStatement stmt = conn.prepareStatement("UPDATE ReadingTip SET info2 = ? WHERE id = ?");
+                stmt.setString(1, newInfo2);
+                stmt.setInt(2, Integer.parseInt(id));
+                stmt.executeUpdate();
+            }
+
+        } catch (Exception e) {
         }
         conn.close();
     }
