@@ -33,7 +33,7 @@ public class ReadingTipService {
      */
     public ReadingTip createTip(String type, String title, String info1, String info2)
             throws Exception {
-        ReadingTip rt = createTipWithType(type, title);
+        ReadingTip rt = new ReadingTip(title, type);
         rt.setMoreInfo1(info1);
         rt.setMoreInfo2(info2);
         readingTipDao.addTip(rt);
@@ -79,23 +79,6 @@ public class ReadingTipService {
 
     public void deleteDatabaseContents() {
         readingTipDao.deleteDatabaseContents();
-    }
-
-    private ReadingTip createTipWithType(String type, String title) {
-
-        ReadingTip tip;
-
-        if (type.equals("book")) {
-            tip = new BookTip(title);
-        } else if (type.equals("blogpost")) {
-            tip = new BlogPostTip(title);
-        } else if (type.equals("video")) {
-            tip = new VideoTip(title);
-        } else {
-            tip = new PodcastTip(title);
-        }
-
-        return tip;
     }
 
 }

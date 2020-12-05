@@ -109,7 +109,7 @@ public class ReadingTipUi {
         String title = io.readLine("What is the title of the reading tip?");
         printTypes();
         String type = io.readLine("What kind of reading tip is it?");
-        String[] additionalInfo = askMoreInfoByType(type);
+        String[] additionalInfo = askMoreInfoByType(type.toLowerCase());
         ReadingTip tip = service.createTip(type.toLowerCase(), title,
                 additionalInfo[0], additionalInfo[1]);
 
@@ -120,12 +120,20 @@ public class ReadingTipUi {
 
         String[] additionalInfo = new String[2];
 
-        if (type.toLowerCase().equals("book")) {
+        if (type.equals("book")) {
             additionalInfo[0] = io.readLine("Who is the author?");
             additionalInfo[1] = io.readLine("What is the ISBN number?");
-        } else {
-            additionalInfo[0] = "---";
-            additionalInfo[1] = "---";
+
+        } else if (type.equals("blogpost")) {
+            additionalInfo[0] = io.readLine("Who is the author?");
+            additionalInfo[1] = io.readLine("What is the URL of the blogpost?");
+
+        } else if (type.equals("podcast")) {
+            additionalInfo[0] = io.readLine("Who is/are the host(s) of the podcast?");
+            additionalInfo[1] = io.readLine("What is the name of the podcast?");
+
+        } else if (type.equals("video")) {
+            additionalInfo[0] = io.readLine("What is the URL of the video?");
         }
 
         return additionalInfo;
@@ -155,7 +163,7 @@ public class ReadingTipUi {
         io.print("Options:");
         io.print("(T)itle");
         io.print("(M)edia type");
-        io.print("(A)uthor");
+        io.print("(A)uthor / host");
         io.print("(I)SBN");
         io.print("Leave empty to search in all fields");
     }

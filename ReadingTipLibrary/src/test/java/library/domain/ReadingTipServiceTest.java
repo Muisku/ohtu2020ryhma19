@@ -24,9 +24,9 @@ public class ReadingTipServiceTest {
     @Before
     public void setUp() throws Exception {
         FakeReadingTipDao readingTip = new FakeReadingTipDao();
-        readingTip.addTip(new BookTip("First title"));
-        readingTip.addTip(new BookTip("Second title"));
-        readingTip.addTip(new BookTip("Third title"));
+        readingTip.addTip(new ReadingTip("First title", "book"));
+        readingTip.addTip(new ReadingTip("Second title", "book"));
+        readingTip.addTip(new ReadingTip("Third title", "book"));
         
         service = new ReadingTipService(readingTip);
         

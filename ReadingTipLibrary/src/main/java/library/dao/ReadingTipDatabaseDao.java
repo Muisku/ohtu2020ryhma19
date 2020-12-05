@@ -9,11 +9,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import library.domain.BlogPostTip;
-import library.domain.BookTip;
-import library.domain.PodcastTip;
 import library.domain.ReadingTip;
-import library.domain.VideoTip;
+
 
 /**
  * ReadingTipDatabaseDao Class. Used to access ReadingTips in the database.
@@ -172,26 +169,6 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
 
     }
 
-    /**
-     * Creates new ReadingTip.
-     */
-    public ReadingTip createTipWithType(String type, String title) {
-
-        ReadingTip tip;
-
-        if (type.equals("book")) {
-            tip = new BookTip(title);
-        } else if (type.equals("blogpost")) {
-            tip = new BlogPostTip(title);
-        } else if (type.equals("video")) {
-            tip = new VideoTip(title);
-        } else {
-            tip = new PodcastTip(title);
-        }
-
-        return tip;
-    }
-
     @Override
     public void markAsRead(String id) {
         try {
@@ -255,7 +232,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
             String info2 = result.getString("info2");
             int read = result.getInt("read");
 
-            ReadingTip readingtip = createTipWithType(type, title);
+            ReadingTip readingtip = new ReadingTip(title, type);
             readingtip.setId(id);
             readingtip.setMoreInfo1(info1);
             readingtip.setMoreInfo2(info2);
