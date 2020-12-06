@@ -49,14 +49,14 @@ public class FakeReadingTipDao implements ReadingTipDao {
     }
 
     @Override
-    public void modifyTip(String id, String title, String info1, String info2) throws Exception {
+    public void modifyTip(String id, String title, String author, String info2) throws Exception {
         for (ReadingTip r : readingTips) {
             if (r.getId() == Integer.parseInt(id)) {
                 if (!title.isEmpty()) {
                     r.setTitle(title);
                 }
-                if (!info1.isEmpty()) {
-                    r.setMoreInfo1(info1);
+                if (!author.isEmpty()) {
+                    r.setAuthor(author);
                 }
                 if (!info2.isEmpty()) {
                     r.setMoreInfo2(info2);

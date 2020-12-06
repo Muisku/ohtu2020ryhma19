@@ -12,7 +12,7 @@ public interface ReadingTipDao {
     
     void removeTip(String id) throws Exception;
     
-    void modifyTip(String id, String title, String info1, String info2) throws Exception;
+    void modifyTip(String id, String title, String author, String info2) throws Exception;
     
     ReadingTip getOneTip(String id) throws Exception;
 

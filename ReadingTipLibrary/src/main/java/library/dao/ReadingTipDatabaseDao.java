@@ -89,12 +89,12 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         createSchemaIfNotExists(conn);
 
         PreparedStatement stmt = conn.prepareStatement(
-                "INSERT INTO ReadingTip (type, title, info1, info2) "
+                "INSERT INTO ReadingTip (type, title, author, info2) "
                 + "VALUES (?,?,?,?)");
 
         stmt.setString(1, readingTip.getType());
         stmt.setString(2, readingTip.getTitle());
-        stmt.setString(3, readingTip.getMoreInfo1());
+        stmt.setString(3, readingTip.getAuthor());
         stmt.setString(4, readingTip.getMoreInfo2());
         stmt.execute();
 
@@ -112,7 +112,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     }
 
     @Override
-    public void modifyTip(String id, String newTitle, String newInfo1, String newInfo2)
+    public void modifyTip(String id, String newTitle, String newAuthor, String newInfo2)
             throws Exception {
         Connection conn = DriverManager.getConnection(databaseAddress);
 
@@ -125,10 +125,10 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
                 stmt.executeUpdate();
             }
 
-            if (!newInfo1.isEmpty()) {
+            if (!newAuthor.isEmpty()) {
                 PreparedStatement stmt
-                        = conn.prepareStatement("UPDATE ReadingTip SET info1 = ? WHERE id = ?");
-                stmt.setString(1, newInfo1);
+                        = conn.prepareStatement("UPDATE ReadingTip SET author = ? WHERE id = ?");
+                stmt.setString(1, newAuthor);
                 stmt.setInt(2, Integer.parseInt(id));
                 stmt.executeUpdate();
             }
@@ -160,7 +160,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
                     + "id INTEGER PRIMARY KEY, "
                     + "type TEXT, "
                     + "title TEXT, "
-                    + "info1 TEXT, "
+                    + "author TEXT, "
                     + "info2 TEXT, "
                     + "read INTEGER DEFAULT 0)"); //0=not read, 1=read
         } catch (Exception e) {
@@ -215,7 +215,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         } else {
             stmt.append("type LIKE '%" + searchTerm + "%' OR ");
             stmt.append("title LIKE '%" + searchTerm + "%' OR ");
-            stmt.append("info1 LIKE '%" + searchTerm + "%' OR ");
+            stmt.append("author LIKE '%" + searchTerm + "%' OR ");
             stmt.append("info2 LIKE '%" + searchTerm + "%'");
         }
 
@@ -228,13 +228,13 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
             int id = result.getInt("id");
             String type = result.getString("type");
             String title = result.getString("title");
-            String info1 = result.getString("info1");
+            String author = result.getString("author");
             String info2 = result.getString("info2");
             int read = result.getInt("read");
 
             ReadingTip readingtip = new ReadingTip(title, type);
             readingtip.setId(id);
-            readingtip.setMoreInfo1(info1);
+            readingtip.setAuthor(author);
             readingtip.setMoreInfo2(info2);
             readingtip.setRead(read);
             readingTips.add(readingtip);

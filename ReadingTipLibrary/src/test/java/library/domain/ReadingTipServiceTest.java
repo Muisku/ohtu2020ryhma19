@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 
 public class ReadingTipServiceTest {
 
-    ReadingTipService service;
+    ReadeinTipService service;
     
 
     public ReadingTipServiceTest() {
@@ -28,7 +28,7 @@ public class ReadingTipServiceTest {
         readingTip.addTip(new ReadingTip("Second title", "book"));
         readingTip.addTip(new ReadingTip("Third title", "book"));
         
-        service = new ReadingTipService(readingTip);
+        service = new ReadeinTipService(readingTip);
         
     }
 
@@ -61,7 +61,7 @@ public class ReadingTipServiceTest {
     public void readingTipCanBeModified() throws Exception {
         service.modifyTip("1", "", "Herbert", "1234");
         ReadingTip r = service.getOneTip("1");
-        assertEquals("Herbert", r.getMoreInfo1());
+        assertEquals("Herbert", r.getAuthor());
     }
     
     @Test

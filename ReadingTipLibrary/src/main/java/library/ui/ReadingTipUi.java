@@ -2,7 +2,7 @@ package library.ui;
 
 import java.util.List;
 import library.domain.ReadingTip;
-import library.domain.ReadingTipService;
+import library.domain.ReadeinTipService;
 import library.io.Io;
 
 /**
@@ -10,7 +10,7 @@ import library.io.Io;
  */
 public class ReadingTipUi {
 
-    ReadingTipService service;
+    ReadeinTipService service;
     private Io io;
     private List<ReadingTip> searchResults;
 
@@ -19,13 +19,13 @@ public class ReadingTipUi {
     }
 
     public void start() throws Exception {
-        start(new ReadingTipService());
+        start(new ReadeinTipService());
     }
 
     /**
      * Starts the user interface.
      */
-    public void start(ReadingTipService rts) throws Exception {
+    public void start(ReadeinTipService rts) throws Exception {
 
         service = rts;
         searchResults = service.browseReadingTips();
@@ -207,7 +207,7 @@ public class ReadingTipUi {
         } else if (fieldOption.equals("m")) {
             return "type";
         } else if (fieldOption.equals("a")) {
-            return "info1";
+            return "author";
         } else if (fieldOption.equals("i")) {
             return "info2";
         } else if ((fieldOption.equals(""))) {

@@ -7,7 +7,7 @@ public class ReadingTip {
     private String type;
     private String[] tags;
     private String[] relatedCourses;
-    private String info1;
+    private String author;
     private String info2;
     private int read;
 
@@ -36,16 +36,16 @@ public class ReadingTip {
         return relatedCourses;
     }
 
-    public void setMoreInfo1(String author) {
-        this.info1 = author;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public void setMoreInfo2(String isbn) {
         this.info2 = isbn;
     }
 
-    public String getMoreInfo1() {
-        return info1;
+    public String getAuthor() {
+        return author;
     }
 
     public String getMoreInfo2() {
@@ -72,19 +72,19 @@ public class ReadingTip {
     public String toString() {
 
         if (type.equals("book")) {
-            return "ID: " + id + "\nAuthor: " + info1 + "\nTitle: " + title
+            return "ID: " + id + "\nAuthor: " + author + "\nTitle: " + title
                     + "\nType: " + type + "\nISBN: " + info2 + "\nRead: " + read;
             
         } else if (type.equals("blogpost")) {
-            return "ID: " + id + "\nTitle: " + title + "\nAuthor: " + info1
+            return "ID: " + id + "\nTitle: " + title + "\nAuthor: " + author
                     + "\nURL: " + info2 + "\nType: " + type + "\nRead: " + read;
             
         } else if (type.equals("podcast")) {
-            return "ID: " + id + "\nHost: " + info1 + "\nPodcast name: "
+            return "ID: " + id + "\nHost: " + author + "\nPodcast name: "
                     + info2 + "\nTitle: " + title + "\nType: " + type + "\nRead: " + read;
             
         } else if (type.equals("video")) {
-            return "ID: " + id + "\nTitle: " + title + "\nURL: " + info1 + "\nType: " + type + "\nRead: " + read;
+            return "ID: " + id + "\nTitle: " + title + "\nURL: " + author + "\nType: " + type + "\nRead: " + read;
             
         } else {
             return "Invalid type!";

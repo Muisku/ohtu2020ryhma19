@@ -18,7 +18,7 @@ public class Stepdefs {
     ReadingTipUi ui;
     List<String> inputLines;
     StubIo io;
-    ReadingTipService service;
+    ReadeinTipService service;
     
     
     @Before
@@ -26,7 +26,7 @@ public class Stepdefs {
         inputLines = new ArrayList<>();     
         io = new StubIo(inputLines);
         ui = new ReadingTipUi(io);
-        service = new ReadingTipService(new ReadingTipDatabaseDao("jdbc:sqlite:ReadingTipTest.db"));
+        service = new ReadeinTipService(new ReadingTipDatabaseDao("jdbc:sqlite:ReadingTipTest.db"));
     }
 
     @After

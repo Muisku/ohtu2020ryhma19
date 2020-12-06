@@ -11,15 +11,15 @@ import library.dao.ReadingTipDatabaseDao;
 /**
  * Provides methods for handling ReadingTips.
  */
-public class ReadingTipService {
+public class ReadeinTipService {
 
     private ReadingTipDao readingTipDao;
 
-    public ReadingTipService() {
+    public ReadeinTipService() {
         this(new ReadingTipDatabaseDao("jdbc:sqlite:readingtip.db"));
     }
 
-    public ReadingTipService(ReadingTipDao rtd) {
+    public ReadeinTipService(ReadingTipDao rtd) {
         readingTipDao = rtd;
     }
 
@@ -28,13 +28,13 @@ public class ReadingTipService {
      *
      * @param type The type of the ReadingTip
      * @param title title
-     * @param info1 The content of this field will depend on the type.
+     * @param author The content of this field will depend on the type.
      * @param info2 The content of this field will depend on the type.
      */
-    public ReadingTip createTip(String type, String title, String info1, String info2)
+    public ReadingTip createTip(String type, String title, String author, String info2)
             throws Exception {
         ReadingTip rt = new ReadingTip(title, type);
-        rt.setMoreInfo1(info1);
+        rt.setAuthor(author);
         rt.setMoreInfo2(info2);
         readingTipDao.addTip(rt);
         return rt;
@@ -64,9 +64,9 @@ public class ReadingTipService {
         readingTipDao.removeTip(id);
     }
 
-    public void modifyTip(String id, String newTitle, String newInfo1, String newInfo2)
+    public void modifyTip(String id, String newTitle, String newAuthor, String newInfo2)
             throws Exception {
-        readingTipDao.modifyTip(id, newTitle, newInfo1, newInfo2);
+        readingTipDao.modifyTip(id, newTitle, newAuthor, newInfo2);
     }
 
     public void markAsRead(String id) {

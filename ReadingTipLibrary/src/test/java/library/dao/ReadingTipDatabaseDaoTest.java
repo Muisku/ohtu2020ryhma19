@@ -23,15 +23,15 @@ public class ReadingTipDatabaseDaoTest {
         testDbDao = new ReadingTipDatabaseDao("jdbc:sqlite:test.db");
 
         ReadingTip testikirja1 = new ReadingTip("Taijan kirja", "book");
-        testikirja1.setMoreInfo1("Teppo Testaaja");
+        testikirja1.setAuthor("Teppo Testaaja");
         testikirja1.setMoreInfo2("1-1111-1-1111");
 
         ReadingTip testikirja2 = new ReadingTip("Testikirja 2", "book");
-        testikirja2.setMoreInfo1("Taija Testaaja");
+        testikirja2.setAuthor("Taija Testaaja");
         testikirja2.setMoreInfo2("2-2222-2-2222");
         
         ReadingTip testikirja3 = new ReadingTip("Testikirja 3", "book");
-        testikirja3.setMoreInfo1("Turkka Dataaja");
+        testikirja3.setAuthor("Turkka Dataaja");
         testikirja3.setMoreInfo2("3-3333-3-3333");
 
         testDbDao.addTip(testikirja1);
@@ -55,7 +55,7 @@ public class ReadingTipDatabaseDaoTest {
         testDbDao.modifyTip("1", "new title", "new info 1", "new info 2");
         ReadingTip book = (ReadingTip) testDbDao.getOneTip("1");
         assertEquals("new title", book.getTitle());
-        assertEquals("new info 1", book.getMoreInfo1());
+        assertEquals("new info 1", book.getAuthor());
         assertEquals("new info 2", book.getMoreInfo2());
     }
 
@@ -84,7 +84,7 @@ public class ReadingTipDatabaseDaoTest {
 
     @Test
     public void searchingIndividualFieldReturnsCorrectResult() throws Exception {
-        readingTips = testDbDao.searchTip("taija", "info1");
+        readingTips = testDbDao.searchTip("taija", "author");
         assertEquals("Testikirja 2", readingTips.get(0).getTitle());
         assertEquals(1, readingTips.size());
 
