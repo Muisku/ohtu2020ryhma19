@@ -9,8 +9,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import library.domain.ReadingTip;
-
 
 /**
  * ReadingTipDatabaseDao Class. Used to access ReadingTips in the database.
@@ -88,9 +89,16 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         Connection conn = DriverManager.getConnection(databaseAddress);
         createSchemaIfNotExists(conn);
 
+        String[] tags = readingTip.getTags();
+        int[] tagIds = new int[tags.length];
+
+        for (int i = 0; i < tags.length; i++) {
+            tagIds[i] = createTagIfNotExists(tags[i], conn);
+        }
+
         PreparedStatement stmt = conn.prepareStatement(
                 "INSERT INTO ReadingTip (type, title, info1, info2) "
-                + "VALUES (?,?,?,?)");
+                + "VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 
         stmt.setString(1, readingTip.getType());
         stmt.setString(2, readingTip.getTitle());
@@ -98,7 +106,70 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         stmt.setString(4, readingTip.getMoreInfo2());
         stmt.execute();
 
+        int readingTipId = (int) stmt.getGeneratedKeys().getLong(1); // retrieves the id of the most recent insert
+
+        linkTagsWithReadingTip(tagIds, readingTipId, conn);
+
         conn.close();
+    }
+    
+    /**
+     * Searches the Tag table for a given tag name. 
+     * If a tag exists, retrieve its id.
+     * If a tag is not found, add a new entry to the table and return its id.
+     * 
+     * @param tag
+     * @param conn
+     * @return tag id
+     */
+
+    private int createTagIfNotExists(String tag, Connection conn) {
+
+        int id = -1;
+
+        try {
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Tag WHERE name = ?"); //checks for tag name in the tag table
+            stmt.setString(1, tag);
+            ResultSet result = stmt.executeQuery();
+
+            if (!result.next()) {  // if tag not found, create tag and get id
+                stmt = conn.prepareStatement("INSERT INTO Tag (name) "
+                        + "VALUES (?)", Statement.RETURN_GENERATED_KEYS);
+                stmt.setString(1, tag);
+                stmt.execute();
+
+                id = (int) stmt.getGeneratedKeys().getLong(1); // retrieves the id of the most recent insert
+
+            } else {
+                id = result.getInt("id");
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ReadingTipDatabaseDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return id;
+    }
+    
+    /**
+     * Links the IDs of the reading tip and its tags by creating entries
+     * to the composite table ReadingTip_Tag. 
+     * 
+     * @param tagIds
+     * @param readingTipId
+     * @param conn
+     * @throws SQLException 
+     */
+
+    private void linkTagsWithReadingTip(int[] tagIds, int readingTipId, Connection conn) throws SQLException {
+
+        for (int tagId : tagIds) {
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO ReadingTip_Tag (readingtip_id, tag_id) "
+                    + "VALUES (?,?)");
+            stmt.setInt(1, readingTipId);
+            stmt.setInt(2, tagId);
+            stmt.execute();
+        }
     }
 
     @Override
@@ -149,7 +220,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     /**
      * Creates ReadingTip table if it doesn't exist.
      */
-    public void createSchemaIfNotExists(Connection conn) throws SQLException {
+    private void createSchemaIfNotExists(Connection conn) throws SQLException {
 
         Statement stmt = conn.createStatement();
 
@@ -163,6 +234,19 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
                     + "info1 TEXT, "
                     + "info2 TEXT, "
                     + "read INTEGER DEFAULT 0)"); //0=not read, 1=read
+
+            stmt.execute(
+                    "CREATE TABLE Tag ("
+                    + "id INTEGER PRIMARY KEY, "
+                    + "name TEXT)");
+
+            stmt.execute(
+                    "CREATE TABLE ReadingTip_Tag ("
+                    + "readingtip_id INTEGER NOT NULL REFERENCES ReadingTip(id) ON DELETE CASCADE, "
+                    + "tag_id INTEGER NOT NULL REFERENCES Tag(id) ON DELETE CASCADE, "
+                    + "PRIMARY KEY (readingtip_id, tag_id))"
+            );
+
         } catch (Exception e) {
             System.out.println("Database schema already exists.");
         }

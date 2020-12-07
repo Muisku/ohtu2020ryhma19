@@ -51,7 +51,8 @@ public class ReadingTipServiceTest {
     
     @Test
     public void readingTipCanBeAdded() throws Exception {
-        service.createTip("book", "Title", "Writer", "1234");
+        String[] tags = {"Science fiction", "Classic"};
+        service.createTip("book", "Title", "Writer", "1234", tags);
         ReadingTip r = service.getOneTip("4");
         assertEquals(4, service.browseReadingTips().size());
         assertEquals("Title", r.getTitle());

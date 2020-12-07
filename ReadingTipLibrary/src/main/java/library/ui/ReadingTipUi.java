@@ -110,8 +110,9 @@ public class ReadingTipUi {
         printTypes();
         String type = io.readLine("What kind of reading tip is it?");
         String[] additionalInfo = askMoreInfoByType(type.toLowerCase());
+        String[] tags = askForTags();
         ReadingTip tip = service.createTip(type.toLowerCase(), title,
-                additionalInfo[0], additionalInfo[1]);
+                additionalInfo[0], additionalInfo[1], tags);
 
         //io.print(tip.toString());
     }
@@ -137,6 +138,30 @@ public class ReadingTipUi {
         }
 
         return additionalInfo;
+    }
+    
+    private String[] askForTags() {
+        
+        String[] tags = new String[8];
+        
+        io.print("Input tags one by one. Empty input escapes. Max tags = " + tags.length);
+        
+        int i = 0;
+        while(i < tags.length) {
+            String tag = io.readLine("Input tag:");
+            
+            if (tag.isEmpty()) {
+                break;
+            } else {
+                tags[i] = tag;
+                i++;
+            }
+        }
+        
+        String[] tagsCompact = new String[i]; 
+        System.arraycopy(tags, 0, tagsCompact, 0, tagsCompact.length);
+        
+        return tagsCompact;
     }
 
     private void printOptions() {
