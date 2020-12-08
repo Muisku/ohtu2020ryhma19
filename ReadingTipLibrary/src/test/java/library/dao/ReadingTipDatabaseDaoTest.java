@@ -19,7 +19,6 @@ public class ReadingTipDatabaseDaoTest {
 
     @Before
     public void setUp() throws Exception {
-
         testDbDao = new ReadingTipDatabaseDao("jdbc:sqlite:test.db");
 
         ReadingTip testikirja1 = new ReadingTip("Taijan kirja", "book");
@@ -44,8 +43,7 @@ public class ReadingTipDatabaseDaoTest {
 
         testDbDao.addTip(testikirja1);
         testDbDao.addTip(testikirja2);
-        testDbDao.addTip(testikirja3);
-        
+        testDbDao.addTip(testikirja3);  
     }
 
     @After
@@ -87,8 +85,6 @@ public class ReadingTipDatabaseDaoTest {
         readingTips = testDbDao.searchTip("taija", "");
         assertEquals("Taijan kirja", readingTips.get(0).getTitle());
         assertEquals(2, readingTips.size());
-        
-
     }
 
     @Test
@@ -96,7 +92,19 @@ public class ReadingTipDatabaseDaoTest {
         readingTips = testDbDao.searchTip("taija", "info1");
         assertEquals("Testikirja 2", readingTips.get(0).getTitle());
         assertEquals(1, readingTips.size());
-
     }
 
+    @Test
+    public void removingExistingReadingTipRemovesTheReadingTipFromDb() throws Exception {
+        assertEquals("Taijan kirja", testDbDao.getOneTip("1").getTitle());
+        testDbDao.removeTip("1");
+        assertEquals(null, testDbDao.getOneTip("1"));
+    }
+    
+    @Test
+    public void removingNonExistingReadingTipIsNoOp() throws Exception {
+        assertEquals(3, testDbDao.getAllTips().size());
+        testDbDao.removeTip("4");
+        assertEquals(3, testDbDao.getAllTips().size());
+    }
 }

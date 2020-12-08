@@ -42,7 +42,6 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         conn.close();
 
         return readingTips;
-
     }
 
     @Override
@@ -207,7 +206,6 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
 
     @Override
     public void removeTip(String id) throws Exception {
-
         Connection conn = DriverManager.getConnection(databaseAddress);
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM ReadingTip WHERE id = ?");
         stmt.setInt(1, Integer.parseInt(id));
@@ -216,8 +214,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     }
 
     @Override
-    public void modifyTip(String id, String newTitle, String newInfo1, String newInfo2)
-            throws Exception {
+    public void modifyTip(String id, String newTitle, String newInfo1, String newInfo2) throws Exception {
         Connection conn = DriverManager.getConnection(databaseAddress);
 
         try {
@@ -258,6 +255,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         Statement stmt = conn.createStatement();
 
         try {
+            stmt.execute("PRAGMA foreign_keys = ON");
 
             stmt.execute(
                     "CREATE TABLE IF NOT EXISTS ReadingTip ("
@@ -269,12 +267,12 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
                     + "read INTEGER DEFAULT 0)"); //0=not read, 1=read
 
             stmt.execute(
-                    "CREATE TABLE Tag ("
+                    "CREATE TABLE IF NOT EXISTS Tag ("
                     + "id INTEGER PRIMARY KEY, "
                     + "name TEXT)");
 
             stmt.execute(
-                    "CREATE TABLE ReadingTip_Tag ("
+                    "CREATE TABLE IF NOT EXISTS ReadingTip_Tag ("
                     + "readingtip_id INTEGER NOT NULL REFERENCES ReadingTip(id) ON DELETE CASCADE, "
                     + "tag_id INTEGER NOT NULL REFERENCES Tag(id) ON DELETE CASCADE, "
                     + "PRIMARY KEY (readingtip_id, tag_id))"
@@ -283,7 +281,6 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         } catch (Exception e) {
             System.out.println("Database schema already exists.");
         }
-
     }
 
     @Override
