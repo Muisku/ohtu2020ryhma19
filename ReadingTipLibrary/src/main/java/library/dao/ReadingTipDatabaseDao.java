@@ -49,15 +49,25 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     public List<ReadingTip> searchTip(String searchTerm, String searchField) throws Exception {
         Connection conn = DriverManager.getConnection(databaseAddress);
         List<ReadingTip> readingTips = new ArrayList<>();
-        try {
-            String stmt = createStatementByField(searchField, searchTerm);
-            PreparedStatement p = conn.prepareStatement(stmt);
+        
+        if (!searchField.equals("tags")) {
+            try {
+                String stmt = createStatementByField(searchField, searchTerm);
+                PreparedStatement p = conn.prepareStatement(stmt);
 
-            ResultSet result = p.executeQuery();
-            readingTips = createListFromResult(result);
-        } catch (Exception e) {
+                ResultSet result = p.executeQuery();
+                readingTips = createListFromResult(result);
+            } catch (Exception e) {
 
+            }
+        } else if (searchField.equals("tags")) {
+            int tagId = getTagId(searchTerm);
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM ReadingTip_Tag WHERE tag_id = ?");
+            stmt.setInt(1, tagId);
+            ResultSet result = stmt.executeQuery();
+            readingTips = createListFromIds(result);
         }
+        
         conn.close();
         return readingTips;
     }
@@ -82,6 +92,29 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         }
         return null;
     }
+    
+    private int getTagId(String tag) throws Exception {
+        Connection conn = DriverManager.getConnection(databaseAddress);
+        List<Integer> tags = new ArrayList<>();
+        try {
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Tag WHERE name = ?");
+            stmt.setString(1, tag);
+            
+            ResultSet result = stmt.executeQuery();
+            while (result.next()) {
+                tags.add(result.getInt("id"));
+            }
+        } catch (Exception e) {
+        }
+
+        conn.close();
+
+        if (tags.size() == 1) {
+            return tags.get(0);
+        }
+        return 0;
+    }
+    
 
     @Override
     public void addTip(ReadingTip readingTip) throws Exception {
@@ -321,6 +354,16 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
             readingtip.setMoreInfo1(info1);
             readingtip.setMoreInfo2(info2);
             readingtip.setRead(read);
+            readingTips.add(readingtip);
+        }
+        return readingTips;
+    }
+    
+    private List<ReadingTip> createListFromIds(ResultSet result) throws Exception {
+        List<ReadingTip> readingTips = new ArrayList<>();
+        while (result.next()) {
+            int id = result.getInt("readingtip_id");
+            ReadingTip readingtip = getOneTip(Integer.toString(id));
             readingTips.add(readingtip);
         }
         return readingTips;

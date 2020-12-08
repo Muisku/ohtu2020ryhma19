@@ -190,6 +190,7 @@ public class ReadingTipUi {
         io.print("(M)edia type");
         io.print("(A)uthor / host");
         io.print("(I)SBN");
+        io.print("Ta(G)s");
         io.print("Leave empty to search in all fields");
     }
 
@@ -211,7 +212,7 @@ public class ReadingTipUi {
             printSearchFields();
             String fieldOption = io.readLine("");
             searchField = fieldFromUserInput(fieldOption.toLowerCase());
-
+            
             if (!searchField.equals("error")) {
                 break;
             }
@@ -235,6 +236,8 @@ public class ReadingTipUi {
             return "info1";
         } else if (fieldOption.equals("i")) {
             return "info2";
+        } else if (fieldOption.equals("g")) {
+            return "tags";
         } else if ((fieldOption.equals(""))) {
             return "";
         } else {
