@@ -43,6 +43,9 @@ public class Stepdefs {
     public void newReadingTipWithTypeIsCreated(String title, String type) throws Exception {
         inputLines.add(title);
         inputLines.add(type);
+        inputLines.add("author");
+        inputLines.add("tag");
+        inputLines.add("");
         
         io = new StubIo(inputLines);
         ui = new ReadingTipUi(io);
@@ -80,6 +83,8 @@ public class Stepdefs {
         inputLines.add(type);
         inputLines.add(author);
         inputLines.add("isbn");
+        inputLines.add("tag");
+        inputLines.add("");
     }
 
     @Given("command delete is selected")
@@ -123,3 +128,4 @@ public class Stepdefs {
 //    }
 
 }
+
