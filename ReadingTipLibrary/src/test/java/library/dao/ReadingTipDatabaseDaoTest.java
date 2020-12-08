@@ -55,6 +55,17 @@ public class ReadingTipDatabaseDaoTest {
     public void testGetAllTips() throws Exception {
         assertTrue(testDbDao.getAllTips().size() > 0);
     }
+    
+    @Test
+    public void addingReadingTipAddsReadingTipToTheDb() throws Exception {
+        assertEquals(3, testDbDao.getAllTips().size());
+        ReadingTip rt = new ReadingTip("Testikirja 4", "book");
+        rt.setTags(new String[]{"aihe1", "aihe2"});
+        testDbDao.addTip(rt);
+        assertEquals(4, testDbDao.getAllTips().size());
+        assertEquals("book", testDbDao.getOneTip("4").getType());
+        assertEquals("Testikirja 4", testDbDao.getOneTip("4").getTitle());
+    }
 
     @Test
     public void testModifyTip() throws Exception {
