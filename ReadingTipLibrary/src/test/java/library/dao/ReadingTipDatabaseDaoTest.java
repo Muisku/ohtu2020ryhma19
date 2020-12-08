@@ -33,6 +33,14 @@ public class ReadingTipDatabaseDaoTest {
         ReadingTip testikirja3 = new ReadingTip("Testikirja 3", "book");
         testikirja3.setMoreInfo1("Turkka Dataaja");
         testikirja3.setMoreInfo2("3-3333-3-3333");
+        
+        String[] tags1 = new String[]{"aihe1", "aihe2"};
+        String[] tags2 = new String[]{"aihe1", "aihe3"};        
+        String[] tags3 = new String[]{"aihe3"};        
+        
+        testikirja1.setTags(tags1);
+        testikirja2.setTags(tags2);
+        testikirja3.setTags(tags3);
 
         testDbDao.addTip(testikirja1);
         testDbDao.addTip(testikirja2);
@@ -68,6 +76,7 @@ public class ReadingTipDatabaseDaoTest {
 
     @Test
     public void testMarkAsUnread() throws Exception {
+        testDbDao.markAsRead("1");
         testDbDao.markAsUnread("1");
         ReadingTip book = (ReadingTip) testDbDao.getOneTip("1");
         assertEquals(0, book.getRead());
