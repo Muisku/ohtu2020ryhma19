@@ -118,4 +118,10 @@ public class ReadingTipDatabaseDaoTest {
         testDbDao.removeTip("4");
         assertEquals(3, testDbDao.getAllTips().size());
     }
+    
+    @Test
+    public void addingReadingTipWithTagAddsTheTagToTheDb() throws Exception {
+        assertEquals("aihe1", testDbDao.getOneTip("1").getTags()[0]);
+        assertEquals("aihe2", testDbDao.getOneTip("1").getTags()[1]);
+    }
 }

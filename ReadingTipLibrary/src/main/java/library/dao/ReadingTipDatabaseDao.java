@@ -81,7 +81,9 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
 
             ResultSet result = stmt.executeQuery();
             readingTips = createListFromResult(result);
-        } catch (Exception e) {
+            result.close();
+        } catch (SQLException e) {
+            System.err.println("Getting one tip failed: " + e.getMessage());
         }
 
         conn.close();
@@ -114,10 +116,8 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         return 0;
     }
     
-
     @Override
     public void addTip(ReadingTip readingTip) throws Exception {
-
         Connection conn = DriverManager.getConnection(databaseAddress);
         createSchemaIfNotExists(conn);
 
@@ -316,7 +316,6 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         String fileName = databaseAddress.substring(location + 1);
         File file = new File(fileName);
         file.delete();
-        //System.out.println("going to delete: " + file.getAbsolutePath());
     }
 
     private String createStatementByField(String searchField, String searchTerm) {
@@ -351,9 +350,33 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
             readingtip.setMoreInfo1(info1);
             readingtip.setMoreInfo2(info2);
             readingtip.setRead(read);
+            readingtip.setTags(fetchTagsForReadingTip(id));
             readingTips.add(readingtip);
         }
         return readingTips;
+    }
+    
+    private String[] fetchTagsForReadingTip(int id) {
+        try {
+            Connection conn = DriverManager.getConnection(databaseAddress);
+            PreparedStatement stmt
+                    = conn.prepareStatement("SELECT name FROM ReadingTip_Tag JOIN Tag ON tag_id = id WHERE readingtip_id = ?");
+            stmt.setInt(1, id);
+            ResultSet result = stmt.executeQuery();
+                       
+            ArrayList<String> tags = new ArrayList<>();
+            while(result.next()) {
+                tags.add(result.getString(1));
+            }
+            result.close();
+            stmt.close();
+            conn.close();
+            String[] retval = new String[tags.size()];
+            return tags.toArray(retval);    
+        } catch (SQLException e) {
+            System.err.println("Fetching tags failed: " + e.getMessage());
+        }
+        return new String[0];
     }
     
     private List<ReadingTip> createListFromIds(ResultSet result) throws Exception {
