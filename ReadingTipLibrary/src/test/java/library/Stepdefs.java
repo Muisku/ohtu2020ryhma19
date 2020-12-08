@@ -91,6 +91,16 @@ public class Stepdefs {
     public void commandDeleteIsSelected() {
         inputLines.add("D");
     }
+    
+    @Given("command mark as read is selected")
+    public void commandMarkAsReadIsSelected() {
+        inputLines.add("R");
+    }
+    
+    @Given("command mark as unread is selected")
+    public void commandMarkAsUnreadIsSelected() {
+        inputLines.add("U");
+    }
 
     @When("reading tip id {string} is given")
     public void readingTipIsDeleted(String id) throws Exception {
