@@ -71,24 +71,29 @@ public class ReadingTip {
     public void setTags(String[] tags) {
         this.tags = tags;
     }
+    
+    private String toYesNo(int read){
+        if (read==0) return "No";
+        return "Yes";
+    }
 
     @Override
     public String toString() {
 
         if (type.equals("book")) {
             return "ID: " + id + "\nAuthor: " + info1 + "\nTitle: " + title
-                    + "\nType: " + type + "\nISBN: " + info2 + "\nRead: " + read;
+                    + "\nType: " + type + "\nISBN: " + info2 + "\nRead: " + toYesNo(read);
             
         } else if (type.equals("blogpost")) {
             return "ID: " + id + "\nTitle: " + title + "\nAuthor: " + info1
-                    + "\nURL: " + info2 + "\nType: " + type + "\nRead: " + read;
+                    + "\nURL: " + info2 + "\nType: " + type + "\nRead: " + toYesNo(read);
             
         } else if (type.equals("podcast")) {
             return "ID: " + id + "\nHost: " + info1 + "\nPodcast name: "
-                    + info2 + "\nTitle: " + title + "\nType: " + type + "\nRead: " + read;
+                    + info2 + "\nTitle: " + title + "\nType: " + type + "\nRead: " + toYesNo(read);
             
         } else if (type.equals("video")) {
-            return "ID: " + id + "\nTitle: " + title + "\nURL: " + info1 + "\nType: " + type + "\nRead: " + read;
+            return "ID: " + id + "\nTitle: " + title + "\nURL: " + info1 + "\nType: " + type + "\nRead: " + toYesNo(read);
             
         } else {
             return "Invalid type!";
