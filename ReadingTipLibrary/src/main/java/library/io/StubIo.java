@@ -9,7 +9,7 @@ import java.util.List;
 public class StubIo implements Io {
 
     private List<String> lines;
-    private int i;
+    private int iterator;
     private ArrayList<String> prints;
 
     public StubIo(List<String> values) {
@@ -32,7 +32,7 @@ public class StubIo implements Io {
      */
     public String readLine(String prompt) {
         print(prompt);
-        if (i < lines.size()) {
+        if (iterator < lines.size()) {
             return lines.get(i++);
         }
         return "";
