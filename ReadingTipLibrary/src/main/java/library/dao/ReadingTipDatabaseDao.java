@@ -227,7 +227,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         try {
 
             stmt.execute(
-                    "CREATE TABLE ReadingTip ("
+                    "CREATE TABLE IF NOT EXISTS ReadingTip ("
                     + "id INTEGER PRIMARY KEY, "
                     + "type TEXT, "
                     + "title TEXT, "
