@@ -33,7 +33,7 @@ public class StubIo implements Io {
     public String readLine(String prompt) {
         print(prompt);
         if (iterator < lines.size()) {
-            return lines.get(i++);
+            return lines.get(iterator++);
         }
         return "";
     }
