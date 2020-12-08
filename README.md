@@ -19,7 +19,7 @@
 
 [Burndown Chart Sprint 2](https://github.com/Muisku/ohtu2020ryhma19/blob/main/Dokumentaatio/sprint2burn.PNG)
 
-![Burndown Chart Sprint 3](https://docs.google.com/spreadsheets/d/e/2PACX-1vSdsNKufE5Dd_4WWoj46Bs-2fNq0CBqKXBNrG_Jw79fHXEye1ZnJzs5GV7_Rdo17IiIDtWc2SQMU24S/pubchart?oid=1423343708&format=image)
+[Burndown Chart Sprint 3](https://docs.google.com/spreadsheets/d/e/2PACX-1vSdsNKufE5Dd_4WWoj46Bs-2fNq0CBqKXBNrG_Jw79fHXEye1ZnJzs5GV7_Rdo17IiIDtWc2SQMU24S/pubchart?oid=1423343708&format=image)
 
 ## Definition of Done
 
