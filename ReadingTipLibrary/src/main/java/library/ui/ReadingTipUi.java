@@ -97,23 +97,20 @@ public class ReadingTipUi {
             io.print(getOneTip(id).toString());
 
             String[] newTags;
-            
-            String input= io.readLine("(A)dd or (R)emove tags?");
-            if (input.equals("")) return;
-                    
+
+            String input = io.readLine("(A)dd or (R)emove tags?");
+            if (input.equals("")) {
+                return;
+            }
+
             if (input.equals("R")) {
-                io.print("Current tags.");
-                String[] tags=getOneTip(id).getTags();
-                for (int i = 0; i < tags.length; i++) {
-                    io.print(i + ". " + tags[i]);
-                }
                 newTags = askForTagsToRemove(getOneTip(id).getTags());
                 service.modifyTags(id, newTags, true);
                 io.print(getOneTip(id).toString());
             }
 
             if (input.equals("A")) {
-                newTags = askForTags(maxTags-getOneTip(id).getTags().length);
+                newTags = askForTags(maxTags - getOneTip(id).getTags().length);
                 service.modifyTags(id, newTags, false);
                 io.print(getOneTip(id).toString());
             }
@@ -121,27 +118,34 @@ public class ReadingTipUi {
     }
 
     private String[] askForTagsToRemove(String[] tags) {
+
         String[] newTags = new String[tags.length - 1];
-        String input = io.readLine("Enter nr. of the tag to remove?");
+        String input = io.readLine("Type tag to remove, or enter to end?");
+
         if ("".equals(input)) {
             return tags;
         }
 
-        int tagToRemove = Integer.parseInt(input);
-        if (tagToRemove < 0 || tagToRemove > tags.length) {
-            io.print("Invalid tag nr.");
-            return tags;
-        } else {
+        boolean found = false;
 
-            for (int i = 0; i < tagToRemove; i++) {
-                newTags[i] = tags[i];
-            }
-            for (int i = tagToRemove + 1; i < tags.length; i++) {
-                if (i > 0) {
-                    newTags[i - 1] = tags[i];
+        for (int i = 0; i < tags.length; i++) {
+            if (tags[i].equals(input)) {
+                for (int j = 0; j < i; j++) {
+                    newTags[j] = tags[j];
                 }
+                for (int j = i + 1; j < tags.length; j++) {
+                    if (j > 0) {
+                        newTags[j - 1] = tags[j];
+                    }
+                }
+                io.print("Tag was deleted.");
+                found=true;
+                break;
             }
-            io.print("Tag was is deleted.");
+        }
+        if(!found){
+            io.print("Not found.");
+            return askForTagsToRemove(tags);
         }
         if (newTags.length > 0) {
             return askForTagsToRemove(newTags);
