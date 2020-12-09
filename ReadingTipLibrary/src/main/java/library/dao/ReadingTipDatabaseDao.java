@@ -411,5 +411,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         }
         return readingTips;
     }
+    
+    
 
 }

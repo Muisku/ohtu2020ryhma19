@@ -42,23 +42,23 @@ public class ReadingTipUi {
                 break;
             }
 
-            if (command.equals("A")) {
+            if (command.toLowerCase().equals("a")) {
                 createReadingTip();
-            } else if (command.equals("M")) {
+            } else if (command.toLowerCase().equals("m")) {
                 modifyTip();
-            } else if (command.equals("L")) {
+            } else if (command.toLowerCase().equals("l")) {
                 getAllTips();
-            } else if (command.equals("S")) {
+            } else if (command.toLowerCase().equals("s")) {
                 searchTip();
-            } else if (command.equals("D")) {
+            } else if (command.toLowerCase().equals("d")) {
                 removeTip();
-            } else if (command.equals("R")) {
+            } else if (command.toLowerCase().equals("r")) {
                 markAsRead();
-            } else if (command.equals("U")) {
+            } else if (command.toLowerCase().equals("u")) {
                 markAsUnread();
-            } else if (command.equals("T")) {
+            } else if (command.toLowerCase().equals("t")) {
                 modifyTags();
-            } else if (command.equals("Q")) {
+            } else if (command.toLowerCase().equals("q")) {
                 break;
             } else {
                 io.print("Oops, command does not exist! Try again.");
@@ -68,52 +68,59 @@ public class ReadingTipUi {
 
     private void removeTip() throws Exception {
         String id = io.readLine("What is the id of the reading tip you want to delete?");
-        if (getOneTip(id) == null) {
-            io.print("Reading tip doesn't exist.");
-        } else {
-            service.removeTip(id);
-            io.print("Reading tip is deleted.");
+        if (checkIfInputIsNumber(id)) {
+            if (getOneTip(id) == null) {
+                io.print("Reading tip doesn't exist.");
+            } else {
+                service.removeTip(id);
+                io.print("Reading tip is deleted.");
+            }            
         }
     }
 
     private void modifyTip() throws Exception {
         String id = io.readLine("What is the id of the reading tip you want to modify?");
-        if (getOneTip(id) == null) {
-            io.print("Reading tip doesn't exist.");
-        } else {
-            io.print(getOneTip(id).toString());
-            String newTitle = io.readLine("What is the new title of the reading tip?");
-            String[] otherInfo = askMoreInfoByType(getOneTip(id).getType());
+        if (checkIfInputIsNumber(id)) {
+            if (getOneTip(id) == null) {
+                io.print("Reading tip doesn't exist.");
+            } else {
+                io.print(getOneTip(id).toString());
+                io.print("\nLeave field empty to not modify.\n");
+                String newTitle = io.readLine("What is the new title of the reading tip?");
+                String[] otherInfo = askMoreInfoByType(getOneTip(id).getType());
 
-            service.modifyTip(id, newTitle, otherInfo[0], otherInfo[1]);
-            io.print(getOneTip(id).toString());
+                service.modifyTip(id, newTitle, otherInfo[0], otherInfo[1]);
+                io.print(getOneTip(id).toString());
+            }
         }
     }
 
     private void modifyTags() throws Exception {
         String id = io.readLine("What is the id of the reading tip for add/remove tags?");
-        if (getOneTip(id) == null) {
-            io.print("Reading tip doesn't exist.");
-        } else {
-            io.print(getOneTip(id).toString());
+        if (checkIfInputIsNumber(id)) {
+            if (getOneTip(id) == null) {
+                io.print("Reading tip doesn't exist.");
+            } else {
+                    io.print(getOneTip(id).toString());
 
-            String[] newTags;
+                String[] newTags;
 
-            String input = io.readLine("(A)dd or (R)emove tags?");
-            if (input.equals("")) {
-                return;
-            }
+                String input = io.readLine("(A)dd or (R)emove tags?");
+                if (input.equals("")) {
+                    return;
+                }
 
-            if (input.equals("R")) {
-                newTags = askForTagsToRemove(getOneTip(id).getTags());
-                service.modifyTags(id, newTags, true);
-                io.print(getOneTip(id).toString());
-            }
+                if (input.toLowerCase().equals("r")) {
+                    newTags = askForTagsToRemove(getOneTip(id).getTags());
+                    service.modifyTags(id, newTags, true);
+                    io.print(getOneTip(id).toString());
+                }
 
-            if (input.equals("A")) {
-                newTags = askForTags(maxTags - getOneTip(id).getTags().length);
-                service.modifyTags(id, newTags, false);
-                io.print(getOneTip(id).toString());
+                if (input.toLowerCase().equals("a")) {
+                    newTags = askForTags(maxTags - getOneTip(id).getTags().length);
+                    service.modifyTags(id, newTags, false);
+                    io.print(getOneTip(id).toString());
+                }
             }
         }
     }
@@ -156,34 +163,45 @@ public class ReadingTipUi {
 
     private void markAsRead() throws Exception {
         String id = io.readLine("What is the id of the reading tip you want to mark as read?");
-        if (getOneTip(id) == null) {
-            io.print("Reading tip doesn't exist.");
-        } else {
-            service.markAsRead(id);
-            io.print(getOneTip(id).toString());
+        if (checkIfInputIsNumber(id)) {
+            if (getOneTip(id) == null) {
+                io.print("Reading tip doesn't exist.");
+            } else if (checkIfInputIsNumber(id)) {
+                service.markAsRead(id);
+                io.print(getOneTip(id).toString());
+            }
         }
     }
 
     private void markAsUnread() throws Exception {
         String id = io.readLine("What is the id of the reading tip you want to mark as unread?");
-        if (getOneTip(id) == null) {
-            io.print("Reading tip doesn't exist.");
-        } else {
-            service.markAsUnread(id);
-            io.print(getOneTip(id).toString());
+        if (checkIfInputIsNumber(id)) {
+            if (getOneTip(id) == null) {
+                io.print("Reading tip doesn't exist.");
+            } else {
+                service.markAsUnread(id);
+                io.print(getOneTip(id).toString());
+            }
         }
     }
 
     private void createReadingTip() throws Exception {
         String title = io.readLine("What is the title of the reading tip?");
-        printTypes();
-        String type = io.readLine("What kind of reading tip is it?");
-        String[] additionalInfo = askMoreInfoByType(type.toLowerCase());
-        String[] tags = askForTags(maxTags);
-        ReadingTip tip = service.createTip(type.toLowerCase(), title,
-                additionalInfo[0], additionalInfo[1], tags);
-
-        //io.print(tip.toString());
+        if (title.equals("")) {
+            System.out.println("Invalid input");
+            title = io.readLine("What is the title of the reading tip?");
+            if (title.equals("")) {
+                System.out.println("Invalid input");
+            }
+        }
+        if (!title.equals("")) {
+            printTypes();
+            String type = io.readLine("What kind of reading tip is it?");
+            String[] additionalInfo = askMoreInfoByType(type.toLowerCase());
+            String[] tags = askForTags(maxTags);
+            ReadingTip tip = service.createTip(type.toLowerCase(), title,
+                    additionalInfo[0], additionalInfo[1], tags);
+        }
     }
 
     private String[] askMoreInfoByType(String type) {
@@ -238,34 +256,42 @@ public class ReadingTipUi {
     }
 
     private void printOptions() {
-        io.print("You can...");
-        io.print("(A)dd a new reading tip");
-        io.print("(M)odify an existing reading tip");
-        io.print("(D)elete a reading tip");
-        io.print("(L)ist all reading tips");
-        io.print("(S)earch reading tips by criteria");
-        io.print("Mark reading tip as (R)ead or (U)nread");
-        io.print("(T)ags, add or remove");
-        io.print("(Q)uit");
+        io.print("+----------------------------------------+");
+        io.print("| You can...                             |");
+        io.print("| (A)dd a new reading tip                |");
+        io.print("| (M)odify an existing reading tip       |");
+        io.print("| (D)elete a reading tip                 |");
+        io.print("| (L)ist all reading tips                |");
+        io.print("| (S)earch reading tips by criteria      |");
+        io.print("| Mark reading tip as (R)ead or (U)nread |");
+        io.print("| (T)ags, add or remove                  |");
+        io.print("| (Q)uit                                 |");
+        io.print("+----------------------------------------+");
+        io.print("");
     }
 
     private void printTypes() {
-        io.print("Options:");
-        io.print("Blogpost");
-        io.print("Book");
-        io.print("Podcast");
-        io.print("Video");
+        io.print("+----------+");
+        io.print("| Options: |");
+        io.print("| Blogpost |");
+        io.print("| Book     |");
+        io.print("| Podcast  |");
+        io.print("| Video    |");
+        io.print("+----------+");
     }
 
     private void printSearchFields() {
-        io.print("Which field would you like to search in?");
-        io.print("Options:");
-        io.print("(T)itle");
-        io.print("(M)edia type");
-        io.print("(A)uthor / host");
-        io.print("(I)SBN");
-        io.print("Ta(G)s");
-        io.print("Leave empty to search in all fields");
+        io.print("+------------------------------------------+");
+        io.print("| Which field would you like to search in? |");
+        io.print("| Options:                                 |");
+        io.print("| (T)itle                                  |");
+        io.print("| (M)edia type                             |");
+        io.print("| (A)uthor / host                          |");
+        io.print("| (I)SBN                                   |");
+        io.print("| Ta(G)s                                   |");
+        io.print("| Leave empty to search in all fields      |");
+        io.print("+------------------------------------------+");
+        io.print("");
     }
 
     private void getAllTips() throws Exception {
@@ -274,12 +300,14 @@ public class ReadingTipUi {
     }
 
     private ReadingTip getOneTip(String id) throws Exception {
-        ReadingTip tip = service.getOneTip(id);
-        return tip;
+        if (checkIfInputIsNumber(id)) {
+            ReadingTip tip = service.getOneTip(id);
+            return tip;
+        }
+        return new ReadingTip("", "");
     }
 
     private void searchTip() throws Exception {
-
         String searchField;
 
         while (true) {
@@ -302,15 +330,15 @@ public class ReadingTipUi {
 
     private String fieldFromUserInput(String fieldOption) {
 
-        if (fieldOption.equals("t")) {
+        if (fieldOption.toLowerCase().equals("t")) {
             return "title";
-        } else if (fieldOption.equals("m")) {
+        } else if (fieldOption.toLowerCase().equals("m")) {
             return "type";
-        } else if (fieldOption.equals("a")) {
+        } else if (fieldOption.toLowerCase().equals("a")) {
             return "info1";
-        } else if (fieldOption.equals("i")) {
+        } else if (fieldOption.toLowerCase().equals("i")) {
             return "info2";
-        } else if (fieldOption.equals("g")) {
+        } else if (fieldOption.toLowerCase().equals("g")) {
             return "tags";
         } else if ((fieldOption.equals(""))) {
             return "";
@@ -326,4 +354,15 @@ public class ReadingTipUi {
         }
     }
 
+    private boolean checkIfInputIsNumber(String input) {
+        try{
+            int number = Integer.parseInt(input);
+        } catch (NumberFormatException ex) {
+            io.print("Invalid input");
+            return false;
+        }
+        return true;
+    }
+    
+    
 }
