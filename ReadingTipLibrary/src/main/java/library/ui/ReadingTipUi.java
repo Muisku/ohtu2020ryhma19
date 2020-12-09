@@ -85,7 +85,7 @@ public class ReadingTipUi {
             if ("Y".equals(io.readLine("Do you want to edit the tags? Y or N"))) {
                 newTags = askForTags();
             } else {
-                newTags = new String[0];
+                newTags = new String[0]; //En empty array will keep old values
             }
 
             service.modifyTip(id, newTitle, otherInfo[0], otherInfo[1]);

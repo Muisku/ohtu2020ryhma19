@@ -204,6 +204,15 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         }
     }
 
+    private void removeAllTags(int readingTipId, Connection conn) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM ReadingTip_Tag "
+                + "WHERE readingtip_id = ?");
+        stmt.setInt(1, readingTipId);
+        stmt.executeUpdate();
+
+      
+    }
+    
     @Override
     public void removeTip(String id) throws Exception {
         Connection conn = DriverManager.getConnection(databaseAddress);
@@ -249,7 +258,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     }
     
     @Override
-    public void modifyTags(String readingTipId, String[] newTags) throws Exception {
+    public void modifyTags(String readingTipId, String[] newTags) throws Exception {               
         Connection conn = DriverManager.getConnection(databaseAddress);
         createSchemaIfNotExists(conn);
         
@@ -258,8 +267,9 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         for (int i = 0; i < newTags.length; i++) {
             tagIds[i] = createTagIfNotExists(newTags[i], conn);
         }
-
-        linkTagsWithReadingTip(tagIds, Integer. parseInt(readingTipId), conn);
+        
+        removeAllTags(Integer.parseInt(readingTipId),conn);
+        linkTagsWithReadingTip(tagIds, Integer.parseInt(readingTipId), conn);
 
         conn.close();
     }
