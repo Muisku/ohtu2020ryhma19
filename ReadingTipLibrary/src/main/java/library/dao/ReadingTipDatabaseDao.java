@@ -48,7 +48,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     public List<ReadingTip> searchTip(String searchTerm, String searchField) throws Exception {
         Connection conn = DriverManager.getConnection(databaseAddress);
         List<ReadingTip> readingTips = new ArrayList<>();
-        
+
         if (!searchField.equals("tags")) {
             try {
                 String stmt = createStatementByField(searchField, searchTerm);
@@ -66,7 +66,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
             ResultSet result = stmt.executeQuery();
             readingTips = createListFromIds(result);
         }
-        
+
         conn.close();
         return readingTips;
     }
@@ -93,14 +93,14 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         }
         return null;
     }
-    
+
     private int getTagId(String tag) throws Exception {
         Connection conn = DriverManager.getConnection(databaseAddress);
         List<Integer> tags = new ArrayList<>();
         try {
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Tag WHERE name = ?");
             stmt.setString(1, tag);
-            
+
             ResultSet result = stmt.executeQuery();
             while (result.next()) {
                 tags.add(result.getInt("id"));
@@ -115,7 +115,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         }
         return 0;
     }
-    
+
     @Override
     public void addTip(ReadingTip readingTip) throws Exception {
         Connection conn = DriverManager.getConnection(databaseAddress);
@@ -144,17 +144,16 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
 
         conn.close();
     }
-    
+
     /**
-     * Searches the Tag table for a given tag name. 
-     * If a tag exists, retrieve its id.
-     * If a tag is not found, add a new entry to the table and return its id.
-     * 
+     * Searches the Tag table for a given tag name. If a tag exists, retrieve
+     * its id. If a tag is not found, add a new entry to the table and return
+     * its id.
+     *
      * @param tag
      * @param conn
      * @return tag id
      */
-
     private int createTagIfNotExists(String tag, Connection conn) {
 
         int id = -1;
@@ -182,20 +181,18 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
 
         return id;
     }
-    
+
     /**
-     * Links the IDs of the reading tip and its tags by creating entries
-     * to the composite table ReadingTip_Tag. 
-     * 
+     * Links the IDs of the reading tip and its tags by creating entries to the
+     * composite table ReadingTip_Tag.
+     *
      * @param tagIds
      * @param readingTipId
      * @param conn
-     * @throws SQLException 
+     * @throws SQLException
      */
-
     private void linkTagsWithReadingTip(int[] tagIds, int readingTipId, Connection conn) throws SQLException {
-
-        for (int tagId : tagIds) {
+        for (int tagId : tagIds) {           
             PreparedStatement stmt = conn.prepareStatement("INSERT INTO ReadingTip_Tag (readingtip_id, tag_id) "
                     + "VALUES (?,?)");
             stmt.setInt(1, readingTipId);
@@ -209,10 +206,8 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
                 + "WHERE readingtip_id = ?");
         stmt.setInt(1, readingTipId);
         stmt.executeUpdate();
-
-      
     }
-    
+
     @Override
     public void removeTip(String id) throws Exception {
         Connection conn = DriverManager.getConnection(databaseAddress);
@@ -250,32 +245,31 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
                 stmt.setInt(2, Integer.parseInt(id));
                 stmt.executeUpdate();
             }
-            
 
         } catch (Exception e) {
         }
         conn.close();
     }
-    
+
     @Override
-    public void modifyTags(String readingTipId, String[] newTags) throws Exception {               
+    public void modifyTags(String readingTipId, String[] newTags) throws Exception {
         Connection conn = DriverManager.getConnection(databaseAddress);
         createSchemaIfNotExists(conn);
-        
+
         int[] tagIds = new int[newTags.length];
 
         for (int i = 0; i < newTags.length; i++) {
             tagIds[i] = createTagIfNotExists(newTags[i], conn);
         }
-        
-        removeAllTags(Integer.parseInt(readingTipId),conn);
+
+        removeAllTags(Integer.parseInt(readingTipId), conn); //remove old tags
         linkTagsWithReadingTip(tagIds, Integer.parseInt(readingTipId), conn);
 
         conn.close();
     }
 
     /**
-     * Creates ReadingTip table if it doesn't exist.
+     * Creates database tables if it doesn't exist.
      */
     private void createSchemaIfNotExists(Connection conn) throws SQLException {
 
@@ -382,7 +376,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         }
         return readingTips;
     }
-    
+
     private String[] fetchTagsForReadingTip(int id) {
         try {
             Connection conn = DriverManager.getConnection(databaseAddress);
@@ -390,22 +384,22 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
                     = conn.prepareStatement("SELECT name FROM ReadingTip_Tag JOIN Tag ON tag_id = id WHERE readingtip_id = ?");
             stmt.setInt(1, id);
             ResultSet result = stmt.executeQuery();
-                       
+
             ArrayList<String> tags = new ArrayList<>();
-            while(result.next()) {
+            while (result.next()) {
                 tags.add(result.getString(1));
             }
             result.close();
             stmt.close();
             conn.close();
             String[] retval = new String[tags.size()];
-            return tags.toArray(retval);    
+            return tags.toArray(retval);
         } catch (SQLException e) {
             System.err.println("Fetching tags failed: " + e.getMessage());
         }
         return new String[0];
     }
-    
+
     private List<ReadingTip> createListFromIds(ResultSet result) throws Exception {
         List<ReadingTip> readingTips = new ArrayList<>();
         while (result.next()) {

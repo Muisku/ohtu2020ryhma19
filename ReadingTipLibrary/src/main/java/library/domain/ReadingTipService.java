@@ -72,9 +72,7 @@ public class ReadingTipService {
     }
     
     public void modifyTags(String id, String[] newTags) throws Exception{
-        if (newTags.length!=0){
             readingTipDao.modifyTags(id, newTags);
-        }
     }
 
     public void markAsRead(String id) {
