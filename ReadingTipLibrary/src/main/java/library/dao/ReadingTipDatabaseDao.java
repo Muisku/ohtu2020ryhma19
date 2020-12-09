@@ -192,7 +192,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
      * @throws SQLException
      */
     private void linkTagsWithReadingTip(int[] tagIds, int readingTipId, Connection conn) throws SQLException {
-        for (int tagId : tagIds) {           
+        for (int tagId : tagIds) {
             PreparedStatement stmt = conn.prepareStatement("INSERT INTO ReadingTip_Tag (readingtip_id, tag_id) "
                     + "VALUES (?,?)");
             stmt.setInt(1, readingTipId);
@@ -252,7 +252,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     }
 
     @Override
-    public void modifyTags(String readingTipId, String[] newTags) throws Exception {
+    public void modifyTags(String readingTipId, String[] newTags, boolean replace) throws Exception {
         Connection conn = DriverManager.getConnection(databaseAddress);
         createSchemaIfNotExists(conn);
 
@@ -262,7 +262,9 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
             tagIds[i] = createTagIfNotExists(newTags[i], conn);
         }
 
-        removeAllTags(Integer.parseInt(readingTipId), conn); //remove old tags
+        if (replace) {
+            removeAllTags(Integer.parseInt(readingTipId), conn);
+        }
         linkTagsWithReadingTip(tagIds, Integer.parseInt(readingTipId), conn);
 
         conn.close();

@@ -99,7 +99,7 @@ public class FakeReadingTipDao implements ReadingTipDao {
     }
 
     @Override
-    public void modifyTags(String id, String[] newTags) throws Exception {
+    public void modifyTags(String id, String[] newTags, boolean replace) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

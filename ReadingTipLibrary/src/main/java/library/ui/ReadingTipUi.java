@@ -13,6 +13,7 @@ public class ReadingTipUi {
     ReadingTipService service;
     private Io io;
     private List<ReadingTip> searchResults;
+    int maxTags = 8; // Maximum tags per reading tip
 
     public ReadingTipUi(Io io) {
         this.io = io;
@@ -107,16 +108,13 @@ public class ReadingTipUi {
                     io.print(i + ". " + tags[i]);
                 }
                 newTags = askForTagsToRemove(getOneTip(id).getTags());
-                service.modifyTags(id, newTags);
+                service.modifyTags(id, newTags, true);
                 io.print(getOneTip(id).toString());
             }
 
             if (input.equals("A")) {
-                newTags = askForTags();
-                
-                // Old tags are replaced with new ones.
-                // Needs to be edited so that old tags are kept.
-                service.modifyTags(id, newTags);
+                newTags = askForTags(maxTags-getOneTip(id).getTags().length);
+                service.modifyTags(id, newTags, false);
                 io.print(getOneTip(id).toString());
             }
         }
@@ -176,7 +174,7 @@ public class ReadingTipUi {
         printTypes();
         String type = io.readLine("What kind of reading tip is it?");
         String[] additionalInfo = askMoreInfoByType(type.toLowerCase());
-        String[] tags = askForTags();
+        String[] tags = askForTags(maxTags);
         ReadingTip tip = service.createTip(type.toLowerCase(), title,
                 additionalInfo[0], additionalInfo[1], tags);
 
@@ -206,9 +204,9 @@ public class ReadingTipUi {
         return additionalInfo;
     }
 
-    private String[] askForTags() {
+    private String[] askForTags(int maxTags) {
 
-        String[] tags = new String[8];
+        String[] tags = new String[maxTags];
 
         io.print("Input tags one by one. Empty input escapes. Max tags = " + tags.length);
 

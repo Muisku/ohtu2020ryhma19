@@ -71,8 +71,8 @@ public class ReadingTipService {
         readingTipDao.modifyTip(id, newTitle, newInfo1, newInfo2);
     }
     
-    public void modifyTags(String id, String[] newTags) throws Exception{
-            readingTipDao.modifyTags(id, newTags);
+    public void modifyTags(String id, String[] newTags, boolean replace) throws Exception{
+            readingTipDao.modifyTags(id, newTags, replace);
     }
 
     public void markAsRead(String id) {
