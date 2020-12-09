@@ -181,7 +181,7 @@ public class ReadingTipUi {
         io.print("(L)ist all reading tips");
         io.print("(S)earch reading tips by criteria");
         io.print("Mark reading tip as (R)ead or (U)nread");
-        io.print("Add or remove (T)ags");
+        //io.print("Add or remove (T)ags"); //tag edit currently included in (M)odify 
         io.print("(Q)uit");
     }
 
