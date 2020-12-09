@@ -14,6 +14,8 @@ public interface ReadingTipDao {
     
     void modifyTip(String id, String title, String info1, String info2) throws Exception;
     
+    void modifyTags (String id, String[] newTags) throws Exception;
+    
     ReadingTip getOneTip(String id) throws Exception;
 
     List<ReadingTip> getAllTips() throws Exception;

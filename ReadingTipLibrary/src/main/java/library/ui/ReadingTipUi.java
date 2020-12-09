@@ -80,7 +80,16 @@ public class ReadingTipUi {
             io.print(getOneTip(id).toString());
             String newTitle = io.readLine("What is the new title of the reading tip?");
             String[] otherInfo = askMoreInfoByType(getOneTip(id).getType());
+
+            String[] newTags;
+            if ("Y".equals(io.readLine("Do you want to edit the tags? Y or N"))) {
+                newTags = askForTags();
+            } else {
+                newTags = new String[0];
+            }
+
             service.modifyTip(id, newTitle, otherInfo[0], otherInfo[1]);
+            service.modifyTags(id, newTags);
             io.print(getOneTip(id).toString());
         }
     }
@@ -139,17 +148,17 @@ public class ReadingTipUi {
 
         return additionalInfo;
     }
-    
+
     private String[] askForTags() {
-        
+
         String[] tags = new String[8];
-        
+
         io.print("Input tags one by one. Empty input escapes. Max tags = " + tags.length);
-        
+
         int i = 0;
-        while(i < tags.length) {
+        while (i < tags.length) {
             String tag = io.readLine("Input tag:");
-            
+
             if (tag.isEmpty()) {
                 break;
             } else {
@@ -157,10 +166,10 @@ public class ReadingTipUi {
                 i++;
             }
         }
-        
-        String[] tagsCompact = new String[i]; 
+
+        String[] tagsCompact = new String[i];
         System.arraycopy(tags, 0, tagsCompact, 0, tagsCompact.length);
-        
+
         return tagsCompact;
     }
 
@@ -172,6 +181,7 @@ public class ReadingTipUi {
         io.print("(L)ist all reading tips");
         io.print("(S)earch reading tips by criteria");
         io.print("Mark reading tip as (R)ead or (U)nread");
+        io.print("Add or remove (T)ags");
         io.print("(Q)uit");
     }
 
@@ -212,7 +222,7 @@ public class ReadingTipUi {
             printSearchFields();
             String fieldOption = io.readLine("");
             searchField = fieldFromUserInput(fieldOption.toLowerCase());
-            
+
             if (!searchField.equals("error")) {
                 break;
             }

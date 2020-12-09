@@ -241,9 +241,26 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
                 stmt.setInt(2, Integer.parseInt(id));
                 stmt.executeUpdate();
             }
+            
 
         } catch (Exception e) {
         }
+        conn.close();
+    }
+    
+    @Override
+    public void modifyTags(String readingTipId, String[] newTags) throws Exception {
+        Connection conn = DriverManager.getConnection(databaseAddress);
+        createSchemaIfNotExists(conn);
+        
+        int[] tagIds = new int[newTags.length];
+
+        for (int i = 0; i < newTags.length; i++) {
+            tagIds[i] = createTagIfNotExists(newTags[i], conn);
+        }
+
+        linkTagsWithReadingTip(tagIds, Integer. parseInt(readingTipId), conn);
+
         conn.close();
     }
 

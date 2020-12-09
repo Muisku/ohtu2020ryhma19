@@ -83,7 +83,10 @@ public class ReadingTip {
     private String tagsToString() {
         String result = "";
         for (int i = 0; i < tags.length; i++) {
-            result = result + tags[i] + ", ";
+            if (i > 0) {
+                result = result + ", ";
+            }
+            result = result + tags[i];
         }
         return result;
     }
@@ -98,17 +101,17 @@ public class ReadingTip {
 
         } else if (type.equals("blogpost")) {
             return "ID: " + id + "\nTitle: " + title + "\nAuthor: " + info1
-                    + "\nURL: " + info2 + "\nType: " + type + "\nRead: " 
+                    + "\nURL: " + info2 + "\nType: " + type + "\nRead: "
                     + toYesNo(read) + "\nTags: " + tagsToString();
 
         } else if (type.equals("podcast")) {
             return "ID: " + id + "\nHost: " + info1 + "\nPodcast name: "
-                    + info2 + "\nTitle: " + title + "\nType: " + type + "\nRead: " 
+                    + info2 + "\nTitle: " + title + "\nType: " + type + "\nRead: "
                     + toYesNo(read) + "\nTags: " + tagsToString();
 
         } else if (type.equals("video")) {
-            return "ID: " + id + "\nTitle: " + title + "\nURL: " + info1 
-                    + "\nType: " + type + "\nRead: " + toYesNo(read) 
+            return "ID: " + id + "\nTitle: " + title + "\nURL: " + info1
+                    + "\nType: " + type + "\nRead: " + toYesNo(read)
                     + "\nTags: " + tagsToString();
 
         } else {

@@ -97,4 +97,9 @@ public class FakeReadingTipDao implements ReadingTipDao {
     public void deleteDatabaseContents() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public void modifyTags(String id, String[] newTags) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
