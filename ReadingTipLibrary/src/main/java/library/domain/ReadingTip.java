@@ -14,6 +14,7 @@ public class ReadingTip {
     public ReadingTip(String title, String type) {
         this.title = title;
         this.type = type;
+        this.tags = new String[8];
     }
 
     public String getTitle() {
@@ -67,14 +68,24 @@ public class ReadingTip {
     public void setId(int id) {
         this.id = id;
     }
-    
+
     public void setTags(String[] tags) {
         this.tags = tags;
     }
-    
-    private String toYesNo(int read){
-        if (read==0) return "No";
+
+    private String toYesNo(int read) {
+        if (read == 0) {
+            return "No";
+        }
         return "Yes";
+    }
+
+    private String tagsToString() {
+        String result = "";
+        for (int i = 0; i < tags.length; i++) {
+            result = result + tags[i] + ", ";
+        }
+        return result;
     }
 
     @Override
@@ -82,19 +93,24 @@ public class ReadingTip {
 
         if (type.equals("book")) {
             return "ID: " + id + "\nAuthor: " + info1 + "\nTitle: " + title
-                    + "\nType: " + type + "\nISBN: " + info2 + "\nRead: " + toYesNo(read);
-            
+                    + "\nType: " + type + "\nISBN: " + info2 + "\nRead: "
+                    + toYesNo(read) + "\nTags: " + tagsToString();
+
         } else if (type.equals("blogpost")) {
             return "ID: " + id + "\nTitle: " + title + "\nAuthor: " + info1
-                    + "\nURL: " + info2 + "\nType: " + type + "\nRead: " + toYesNo(read);
-            
+                    + "\nURL: " + info2 + "\nType: " + type + "\nRead: " 
+                    + toYesNo(read) + "\nTags: " + tagsToString();
+
         } else if (type.equals("podcast")) {
             return "ID: " + id + "\nHost: " + info1 + "\nPodcast name: "
-                    + info2 + "\nTitle: " + title + "\nType: " + type + "\nRead: " + toYesNo(read);
-            
+                    + info2 + "\nTitle: " + title + "\nType: " + type + "\nRead: " 
+                    + toYesNo(read) + "\nTags: " + tagsToString();
+
         } else if (type.equals("video")) {
-            return "ID: " + id + "\nTitle: " + title + "\nURL: " + info1 + "\nType: " + type + "\nRead: " + toYesNo(read);
-            
+            return "ID: " + id + "\nTitle: " + title + "\nURL: " + info1 
+                    + "\nType: " + type + "\nRead: " + toYesNo(read) 
+                    + "\nTags: " + tagsToString();
+
         } else {
             return "Invalid type!";
         }
