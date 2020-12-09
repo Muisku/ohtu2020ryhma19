@@ -1,16 +1,25 @@
 package library.domain;
 
+/**
+ * ReadingTip class.
+ */
 public class ReadingTip {
 
     private int id;
     private final String title;
-    private String type;
+    private final String type;
     private String[] tags;
     private String[] relatedCourses;
     private String info1;
     private String info2;
     private int read;
-
+    
+    /**
+     * Creates new ReadingTip with title and type.
+     *
+     * @param title title of the ReadingTip
+     * @param type type of the ReadingTip
+     */
     public ReadingTip(String title, String type) {
         this.title = title;
         this.type = type;

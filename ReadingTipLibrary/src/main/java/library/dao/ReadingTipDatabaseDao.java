@@ -57,11 +57,12 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
                 ResultSet result = p.executeQuery();
                 readingTips = createListFromResult(result);
             } catch (Exception e) {
-
+                System.err.println("Searching tip failed:" + e.getMessage());
             }
         } else if (searchField.equals("tags")) {
             int tagId = getTagId(searchTerm);
-            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM ReadingTip_Tag WHERE tag_id = ?");
+            PreparedStatement stmt = conn.prepareStatement(
+                    "SELECT * FROM ReadingTip_Tag WHERE tag_id = ?");
             stmt.setInt(1, tagId);
             ResultSet result = stmt.executeQuery();
             readingTips = createListFromIds(result);
@@ -106,7 +107,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
                 tags.add(result.getInt("id"));
             }
         } catch (Exception e) {
-            System.out.println("Getting tag id failed:" + e.getMessage());
+            System.err.println("Getting tag id failed:" + e.getMessage());
         }
 
         conn.close();
@@ -151,8 +152,8 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
      * its id. If a tag is not found, add a new entry to the table and return
      * its id.
      *
-     * @param tag
-     * @param conn
+     * @param tag name of the tag
+     * @param conn connection to database
      * @return tag id
      */
     private int createTagIfNotExists(String tag, Connection conn) {
@@ -187,10 +188,10 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
      * Links the IDs of the reading tip and its tags by creating entries to the
      * composite table ReadingTip_Tag.
      *
-     * @param tagIds
-     * @param readingTipId
-     * @param conn
-     * @throws SQLException
+     * @param tagIds ids of the tags
+     * @param readingTipId id of the ReadingTip
+     * @param conn connection to database
+     * @throws SQLException exception
      */
     private void linkTagsWithReadingTip(int[] tagIds, int readingTipId, Connection conn) throws SQLException {
         for (int tagId : tagIds) {
@@ -248,6 +249,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
             }
 
         } catch (Exception e) {
+            System.err.println("Modifying tip failed: " + e.getMessage());
         }
         conn.close();
     }
@@ -317,7 +319,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
             stmt.executeUpdate();
             conn.close();
         } catch (Exception e) {
-            System.out.println("Failed marking tip read: " + e.getMessage());
+            System.err.println("Failed marking tip read: " + e.getMessage());
         }
     }
 
@@ -331,7 +333,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
             stmt.executeUpdate();
             conn.close();
         } catch (Exception e) {
-            System.out.println("Failed marking tip unread: " + e.getMessage());
+            System.err.println("Failed marking tip unread: " + e.getMessage());
         }
     }
 
