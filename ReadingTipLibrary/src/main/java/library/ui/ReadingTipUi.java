@@ -101,7 +101,7 @@ public class ReadingTipUi {
             if (getOneTip(id) == null) {
                 io.print("Reading tip doesn't exist.");
             } else {
-                    io.print(getOneTip(id).toString());
+                io.print(getOneTip(id).toString());
 
                 String[] newTags;
 
@@ -245,7 +245,7 @@ public class ReadingTipUi {
                 tags.add(tag);
                 i++;
             } else {
-               io.print("Tag was already added!"); 
+                io.print("Tag was already added!"); 
             } 
         }
 
@@ -355,7 +355,7 @@ public class ReadingTipUi {
     }
 
     private boolean checkIfInputIsNumber(String input) {
-        try{
+        try {
             int number = Integer.parseInt(input);
         } catch (NumberFormatException ex) {
             io.print("Invalid input");

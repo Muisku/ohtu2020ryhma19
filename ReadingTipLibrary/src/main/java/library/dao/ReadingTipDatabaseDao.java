@@ -106,6 +106,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
                 tags.add(result.getInt("id"));
             }
         } catch (Exception e) {
+            System.out.println("Getting tag id failed:" + e.getMessage());
         }
 
         conn.close();
@@ -316,7 +317,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
             stmt.executeUpdate();
             conn.close();
         } catch (Exception e) {
-            System.out.println("exception: " + e);
+            System.out.println("Failed marking tip read: " + e.getMessage());
         }
     }
 
@@ -330,6 +331,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
             stmt.executeUpdate();
             conn.close();
         } catch (Exception e) {
+            System.out.println("Failed marking tip unread: " + e.getMessage());
         }
     }
 

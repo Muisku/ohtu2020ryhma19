@@ -31,8 +31,8 @@ public class ReadingTipService {
      * @param info1 The content of this field will depend on the type.
      * @param info2 The content of this field will depend on the type.
      */
-    public ReadingTip createTip(String type, String title, String info1, String info2, String[] tags)
-            throws Exception {
+    public ReadingTip createTip(String type, String title, String info1, String info2,
+            String[] tags) throws Exception {
         ReadingTip rt = new ReadingTip(title, type);
         rt.setMoreInfo1(info1);
         rt.setMoreInfo2(info2);
@@ -71,8 +71,8 @@ public class ReadingTipService {
         readingTipDao.modifyTip(id, newTitle, newInfo1, newInfo2);
     }
     
-    public void modifyTags(String id, String[] newTags, boolean replace) throws Exception{
-            readingTipDao.modifyTags(id, newTags, replace);
+    public void modifyTags(String id, String[] newTags, boolean replace) throws Exception {
+        readingTipDao.modifyTags(id, newTags, replace);
     }
 
     public void markAsRead(String id) {
