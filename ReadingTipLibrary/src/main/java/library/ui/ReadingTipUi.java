@@ -89,22 +89,33 @@ public class ReadingTipUi {
     }
 
     private void modifyTags() throws Exception {
-        String id = io.readLine("What is the id of the reading tip you want to modify?");
+        String id = io.readLine("What is the id of the reading tip for add/remove tags?");
         if (getOneTip(id) == null) {
             io.print("Reading tip doesn't exist.");
         } else {
             io.print(getOneTip(id).toString());
 
             String[] newTags;
-
-            if ("Y".equals(io.readLine("Do you want to remove any of the existing tags? Y or N"))) {
+            
+            String input= io.readLine("(A)dd or (R)emove tags?");
+            if (input.equals("")) return;
+                    
+            if (input.equals("R")) {
+                io.print("Current tags.");
+                String[] tags=getOneTip(id).getTags();
+                for (int i = 0; i < tags.length; i++) {
+                    io.print(i + ". " + tags[i]);
+                }
                 newTags = askForTagsToRemove(getOneTip(id).getTags());
                 service.modifyTags(id, newTags);
                 io.print(getOneTip(id).toString());
             }
 
-            if ("Y".equals(io.readLine("Do you want to add new tags? Y or N"))) {
+            if (input.equals("A")) {
                 newTags = askForTags();
+                
+                // Old tags are replaced with new ones.
+                // Needs to be edited so that old tags are kept.
                 service.modifyTags(id, newTags);
                 io.print(getOneTip(id).toString());
             }
@@ -112,12 +123,13 @@ public class ReadingTipUi {
     }
 
     private String[] askForTagsToRemove(String[] tags) {
-        io.print("Current tags.");
-        for (int i = 0; i < tags.length; i++) {
-            io.print(i + ". " + tags[i]);
-        }
         String[] newTags = new String[tags.length - 1];
-        int tagToRemove = Integer.parseInt(io.readLine("Enter nr. of the tag to remove?"));
+        String input = io.readLine("Enter nr. of the tag to remove?");
+        if ("".equals(input)) {
+            return tags;
+        }
+
+        int tagToRemove = Integer.parseInt(input);
         if (tagToRemove < 0 || tagToRemove > tags.length) {
             io.print("Invalid tag nr.");
             return tags;
@@ -125,15 +137,16 @@ public class ReadingTipUi {
 
             for (int i = 0; i < tagToRemove; i++) {
                 newTags[i] = tags[i];
-                System.out.println("je");
             }
-            for (int i = tagToRemove+1; i < tags.length; i++) {
+            for (int i = tagToRemove + 1; i < tags.length; i++) {
                 if (i > 0) {
                     newTags[i - 1] = tags[i];
                 }
             }
-            System.out.println("lengt" + newTags.length);
             io.print("Tag was is deleted.");
+        }
+        if (newTags.length > 0) {
+            return askForTagsToRemove(newTags);
         }
         return newTags;
     }
