@@ -1,5 +1,6 @@
 package library.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 import library.domain.ReadingTip;
 import library.domain.ReadingTipService;
@@ -139,11 +140,11 @@ public class ReadingTipUi {
                     }
                 }
                 io.print("Tag was deleted.");
-                found=true;
+                found = true;
                 break;
             }
         }
-        if(!found){
+        if (!found) {
             io.print("Not found.");
             return askForTagsToRemove(tags);
         }
@@ -210,24 +211,28 @@ public class ReadingTipUi {
 
     private String[] askForTags(int maxTags) {
 
-        String[] tags = new String[maxTags];
+        ArrayList<String> tags = new ArrayList<>();
 
-        io.print("Input tags one by one. Empty input escapes. Max tags = " + tags.length);
+        io.print("Input tags one by one. Empty input escapes. Max tags = " + maxTags);
 
         int i = 0;
-        while (i < tags.length) {
+        while (i < maxTags) {
             String tag = io.readLine("Input tag:");
 
             if (tag.isEmpty()) {
                 break;
-            } else {
-                tags[i] = tag;
-                i++;
             }
+            
+            if (!tags.contains(tag)) {
+                tags.add(tag);
+                i++;
+            } else {
+               io.print("Tag was already added!"); 
+            } 
         }
 
         String[] tagsCompact = new String[i];
-        System.arraycopy(tags, 0, tagsCompact, 0, tagsCompact.length);
+        tags.toArray(tagsCompact);
 
         return tagsCompact;
     }
