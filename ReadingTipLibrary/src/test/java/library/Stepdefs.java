@@ -51,9 +51,11 @@ public class Stepdefs {
         ui = new ReadingTipUi(io);
         ui.start(service);
     }
+   
     
     @Then("system will respond with {string}")
     public void readingTipCanBeFound(String expectedOutput) {
+        System.out.println("ohjelma tulosti seuraavat rivit "+io.getPrints());
         assertTrue(io.getPrints().contains(expectedOutput));
     }
     
@@ -87,6 +89,7 @@ public class Stepdefs {
         inputLines.add("");
     }
 
+    
     @Given("command delete is selected")
     public void commandDeleteIsSelected() {
         inputLines.add("D");
@@ -115,6 +118,7 @@ public class Stepdefs {
     public void commandSearchIsSelected() {
         inputLines.add("S");
     }
+   
     
     @Given("search criteria {string} is selected")
     public void searchCriteriaIsSelected(String criteria) {
@@ -129,7 +133,20 @@ public class Stepdefs {
         ui = new ReadingTipUi(io);
         ui.start(service);
     }
+
     
+    @Given("command tags is selected")
+    public void commandTagsIsSelected(){
+        inputLines.add("T");
+    }
+    @Given("choose add or remove {string} is given")
+    public void tagOptionIsSelected(String option){
+        inputLines.add(option);
+    }
+    @When("tags {string} is given")
+    public void addTagToTip(String tag) throws Exception{
+        inputLines.add(tag);
+    }
 
 //    @Then("a reading tip {string} with type {string} is printed")
 //    public void systemWillRespondWith(String title, String type) {
