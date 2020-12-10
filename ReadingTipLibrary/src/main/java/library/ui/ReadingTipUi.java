@@ -197,10 +197,20 @@ public class ReadingTipUi {
         if (!title.equals("")) {
             printTypes();
             String type = io.readLine("What kind of reading tip is it?");
-            String[] additionalInfo = askMoreInfoByType(type.toLowerCase());
-            String[] tags = askForTags(maxTags);
-            ReadingTip tip = service.createTip(type.toLowerCase(), title,
-                    additionalInfo[0], additionalInfo[1], tags);
+            if (type.equals("")) {
+                System.out.println("Invalid input");
+                type = io.readLine("What kind of reading tip is it?");
+                if (type.equals("")) {
+                    System.out.println("Invalid input");
+                }
+            }
+            if (!type.equals("")) {
+                String[] additionalInfo = askMoreInfoByType(type.toLowerCase());
+                String[] tags = askForTags(maxTags);
+                ReadingTip tip = service.createTip(type.toLowerCase(), title,
+                        additionalInfo[0], additionalInfo[1], tags);
+            }
+            
         }
     }
 
@@ -325,7 +335,7 @@ public class ReadingTipUi {
         String searchTerm = io.readLine("Input search term:");
         
         searchResults = service.searchTip(searchTerm, searchField);
-        if (searchResults.size() == 0) {
+        if (searchResults.isEmpty()) {
             io.print("No reading tips found.");
         }
         
