@@ -55,7 +55,6 @@ public class Stepdefs {
     
     @Then("system will respond with {string}")
     public void readingTipCanBeFound(String expectedOutput) {
-        System.out.println("ohjelma tulosti seuraavat rivit "+io.getPrints());
         assertTrue(io.getPrints().contains(expectedOutput));
     }
     
@@ -147,6 +146,29 @@ public class Stepdefs {
     public void addTagToTip(String tag) throws Exception{
         inputLines.add(tag);
     }
+    @Given("command modify is selected")
+    public void commandModifyIsSelected(){
+        inputLines.add("M");
+
+    }
+    @Given("new title {string} is given")
+    public void modifiedTitle(String title){
+        inputLines.add(title);
+    }
+    @Given("new author {string} is given")
+    public void modifiedAuthor(String author){
+        inputLines.add(author);
+    }
+
+    @When("new isbn {string} is given")
+    public void modifiedIsbn(String isbn) throws Exception{
+        inputLines.add(isbn);
+
+	io = new StubIo(inputLines);
+        ui = new ReadingTipUi(io);
+        ui.start(service);
+    }
+
 
 //    @Then("a reading tip {string} with type {string} is printed")
 //    public void systemWillRespondWith(String title, String type) {
