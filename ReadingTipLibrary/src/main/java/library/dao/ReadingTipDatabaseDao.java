@@ -23,11 +23,21 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     public ReadingTipDatabaseDao(String databaseAddress) {
         this.databaseAddress = databaseAddress;
     }
+    
+    private Connection getConnection() throws SQLException {
+        
+        Connection conn = DriverManager.getConnection(databaseAddress);
+        
+        Statement foreignKeysOn = conn.createStatement();
+        foreignKeysOn.execute("PRAGMA foreign_keys = ON");
+        
+        return conn;  
+    }
 
     @Override
     public List<ReadingTip> getAllTips() throws Exception {
 
-        Connection conn = DriverManager.getConnection(databaseAddress);
+        Connection conn = getConnection();
         List<ReadingTip> readingTips = new ArrayList<>();
 
         try {
@@ -46,7 +56,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
 
     @Override
     public List<ReadingTip> searchTip(String searchTerm, String searchField) throws Exception {
-        Connection conn = DriverManager.getConnection(databaseAddress);
+        Connection conn = getConnection();
         List<ReadingTip> readingTips = new ArrayList<>();
 
         if (!searchField.equals("tags")) {
@@ -74,7 +84,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
 
     @Override
     public ReadingTip getOneTip(String id) throws Exception {
-        Connection conn = DriverManager.getConnection(databaseAddress);
+        Connection conn = getConnection();
         List<ReadingTip> readingTips = new ArrayList<>();
         try {
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM ReadingTip WHERE id = ?");
@@ -96,7 +106,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     }
 
     private int getTagId(String tag) throws Exception {
-        Connection conn = DriverManager.getConnection(databaseAddress);
+        Connection conn = getConnection();
         List<Integer> tags = new ArrayList<>();
         try {
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Tag WHERE name = ?");
@@ -120,7 +130,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
 
     @Override
     public void addTip(ReadingTip readingTip) throws Exception {
-        Connection conn = DriverManager.getConnection(databaseAddress);
+        Connection conn = getConnection();
         createSchemaIfNotExists(conn);
 
         String[] tags = readingTip.getTags();
@@ -212,7 +222,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
 
     @Override
     public void removeTip(String id) throws Exception {
-        Connection conn = DriverManager.getConnection(databaseAddress);
+        Connection conn = getConnection();
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM ReadingTip WHERE id = ?");
         stmt.setInt(1, Integer.parseInt(id));
         stmt.executeUpdate();
@@ -221,7 +231,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
 
     @Override
     public void modifyTip(String id, String newTitle, String newInfo1, String newInfo2) throws Exception {
-        Connection conn = DriverManager.getConnection(databaseAddress);
+        Connection conn = getConnection();
 
         try {
             if (!newTitle.isEmpty()) {
@@ -256,7 +266,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
 
     @Override
     public void modifyTags(String readingTipId, String[] newTags, boolean replace) throws Exception {
-        Connection conn = DriverManager.getConnection(databaseAddress);
+        Connection conn = getConnection();
         createSchemaIfNotExists(conn);
 
         int[] tagIds = new int[newTags.length];
@@ -281,7 +291,6 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         Statement stmt = conn.createStatement();
 
         try {
-            stmt.execute("PRAGMA foreign_keys = ON");
 
             stmt.execute(
                     "CREATE TABLE IF NOT EXISTS ReadingTip ("
@@ -312,7 +321,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     @Override
     public void markAsRead(String id) {
         try {
-            Connection conn = DriverManager.getConnection(databaseAddress);
+            Connection conn = getConnection();
             PreparedStatement stmt
                     = conn.prepareStatement("UPDATE ReadingTip SET read = 1 WHERE id = ?");
             stmt.setInt(1, Integer.parseInt(id));
@@ -326,7 +335,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     @Override
     public void markAsUnread(String id) {
         try {
-            Connection conn = DriverManager.getConnection(databaseAddress);
+            Connection conn = getConnection();
             PreparedStatement stmt
                     = conn.prepareStatement("UPDATE ReadingTip SET read = 0 WHERE id = ?");
             stmt.setInt(1, Integer.parseInt(id));
@@ -385,7 +394,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
 
     private String[] fetchTagsForReadingTip(int id) {
         try {
-            Connection conn = DriverManager.getConnection(databaseAddress);
+            Connection conn = getConnection();
             PreparedStatement stmt
                     = conn.prepareStatement("SELECT name FROM ReadingTip_Tag JOIN Tag ON tag_id = id WHERE readingtip_id = ?");
             stmt.setInt(1, id);
