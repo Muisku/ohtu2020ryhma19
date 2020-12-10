@@ -68,12 +68,48 @@ public class ReadingTipDatabaseDaoTest {
     }
 
     @Test
-    public void testModifyTip() throws Exception {
+    public void modifyingReadingTipOfTypeBookSavesTheModificationsToTheDatabase() throws Exception {
         testDbDao.modifyTip("1", "new title", "new info 1", "new info 2");
         ReadingTip book = (ReadingTip) testDbDao.getOneTip("1");
         assertEquals("new title", book.getTitle());
         assertEquals("new info 1", book.getMoreInfo1());
         assertEquals("new info 2", book.getMoreInfo2());
+    }
+    
+    @Test
+    public void modifyingReadingTipOfTypeVideoSavesTheModificationsToTheDatabase() throws Exception {
+        ReadingTip v = new ReadingTip("Testivideo", "video");
+        v.setTags(new String[]{"aihe1", "aihe2"});
+        testDbDao.addTip(v);
+        testDbDao.modifyTip("4", "new video title", "new info 1", "new info 2");
+        ReadingTip video = (ReadingTip) testDbDao.getOneTip("4");
+        assertEquals("new video title", video.getTitle());
+        assertEquals("new info 1", video.getMoreInfo1());
+        assertEquals("new info 2", video.getMoreInfo2());
+    }
+    
+    @Test
+    public void modifyingReadingTipOfTypePodcastSavesTheModificationsToTheDatabase() throws Exception {
+        ReadingTip p = new ReadingTip("Testipodcast", "podcast");
+        p.setTags(new String[]{"aihe1", "aihe2"});
+        testDbDao.addTip(p);
+        testDbDao.modifyTip("4", "new podcast title", "new info 1", "new info 2");
+        ReadingTip video = (ReadingTip) testDbDao.getOneTip("4");
+        assertEquals("new podcast title", video.getTitle());
+        assertEquals("new info 1", video.getMoreInfo1());
+        assertEquals("new info 2", video.getMoreInfo2());
+    }
+    
+    @Test
+    public void modifyingReadingTipOfTypeBlogPostSavesTheModificationsToTheDatabase() throws Exception {
+        ReadingTip b = new ReadingTip("Testiblogpost", "blogpost");
+        b.setTags(new String[]{"aihe1", "aihe2"});
+        testDbDao.addTip(b);
+        testDbDao.modifyTip("4", "new blogpost title", "new info 1", "new info 2");
+        ReadingTip video = (ReadingTip) testDbDao.getOneTip("4");
+        assertEquals("new blogpost title", video.getTitle());
+        assertEquals("new info 1", video.getMoreInfo1());
+        assertEquals("new info 2", video.getMoreInfo2());
     }
 
     @Test
