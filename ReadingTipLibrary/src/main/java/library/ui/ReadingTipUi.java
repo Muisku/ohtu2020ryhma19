@@ -323,8 +323,12 @@ public class ReadingTipUi {
         }
 
         String searchTerm = io.readLine("Input search term:");
-
+        
         searchResults = service.searchTip(searchTerm, searchField);
+        if (searchResults.size() == 0) {
+            io.print("No reading tips found.");
+        }
+        
         listSearchResults();
     }
 
@@ -352,6 +356,7 @@ public class ReadingTipUi {
             io.print(searchResults.get(i - 1).toString());
             io.print("");
         }
+        searchResults = service.browseReadingTips();
     }
 
     private boolean checkIfInputIsNumber(String input) {
