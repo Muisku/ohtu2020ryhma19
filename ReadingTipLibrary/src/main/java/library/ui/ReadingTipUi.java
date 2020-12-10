@@ -20,14 +20,14 @@ public class ReadingTipUi {
         this.io = io;
     }
 
-    public void start() throws Exception {
+    public void start() {
         start(new ReadingTipService());
     }
 
     /**
      * Starts the user interface.
      */
-    public void start(ReadingTipService rts) throws Exception {
+    public void start(ReadingTipService rts) {
 
         service = rts;
         searchResults = service.browseReadingTips();
@@ -66,19 +66,58 @@ public class ReadingTipUi {
         }
     }
 
-    private void removeTip() throws Exception {
+    private void createReadingTip() {
+        String title = io.readLine("What is the title of the reading tip?");
+        if (title.equals("")) {
+            System.out.println("Invalid input");
+            title = io.readLine("What is the title of the reading tip?");
+            if (title.equals("")) {
+                System.out.println("Invalid input");
+            }
+        }
+        if (!title.equals("")) {
+            printTypes();
+            String type = io.readLine("What kind of reading tip is it?");
+            if (type.equals("")) {
+                System.out.println("Invalid input");
+                type = io.readLine("What kind of reading tip is it?");
+                if (type.equals("")) {
+                    System.out.println("Invalid input");
+                }
+            }
+            if (!type.equals("")) {
+                String[] additionalInfo = askMoreInfoByType(type.toLowerCase());
+                String[] tags = askForTags(maxTags);
+                boolean success = service.createTip(type.toLowerCase(), title,
+                        additionalInfo[0], additionalInfo[1], tags);
+                if (success) {
+                    io.print("New reading tip created!");
+                } else {
+                    io.print("Database error: Reading tip creation failed!");
+                }
+            }
+
+        }
+    }
+
+    private void removeTip() {
         String id = io.readLine("What is the id of the reading tip you want to delete?");
         if (checkIfInputIsNumber(id)) {
             if (getOneTip(id) == null) {
                 io.print("Reading tip doesn't exist.");
             } else {
-                service.removeTip(id);
-                io.print("Reading tip is deleted.");
-            }            
+                boolean success = service.removeTip(id);
+
+                if (success) {
+                    io.print("Reading tip successfully removed!");
+                } else {
+                    io.print("Database error: Reading tip could not be removed!");
+                }
+            }
         }
     }
 
-    private void modifyTip() throws Exception {
+    private void modifyTip() {
         String id = io.readLine("What is the id of the reading tip you want to modify?");
         if (checkIfInputIsNumber(id)) {
             if (getOneTip(id) == null) {
@@ -89,13 +128,19 @@ public class ReadingTipUi {
                 String newTitle = io.readLine("What is the new title of the reading tip?");
                 String[] otherInfo = askMoreInfoByType(getOneTip(id).getType());
 
-                service.modifyTip(id, newTitle, otherInfo[0], otherInfo[1]);
+                boolean success = service.modifyTip(id, newTitle, otherInfo[0], otherInfo[1]);
                 io.print(getOneTip(id).toString());
+
+                if (success) {
+                    io.print("Reading tip successfully modified!");
+                } else {
+                    io.print("Database error: Reading tip modification failed!");
+                }
             }
         }
     }
 
-    private void modifyTags() throws Exception {
+    private void modifyTags() {
         String id = io.readLine("What is the id of the reading tip for add/remove tags?");
         if (checkIfInputIsNumber(id)) {
             if (getOneTip(id) == null) {
@@ -112,14 +157,26 @@ public class ReadingTipUi {
 
                 if (input.toLowerCase().equals("r")) {
                     newTags = askForTagsToRemove(getOneTip(id).getTags());
-                    service.modifyTags(id, newTags, true);
+                    boolean success = service.modifyTags(id, newTags, true);
                     io.print(getOneTip(id).toString());
+
+                    if (success) {
+                        io.print("Tag(s) successfully removed!");
+                    } else {
+                        io.print("Database error: Tag(s) could not be removed!");
+                    }
                 }
 
                 if (input.toLowerCase().equals("a")) {
                     newTags = askForTags(maxTags - getOneTip(id).getTags().length);
-                    service.modifyTags(id, newTags, false);
+                    boolean success = service.modifyTags(id, newTags, false);
                     io.print(getOneTip(id).toString());
+
+                    if (success) {
+                        io.print("Tag(s) successfully added!");
+                    } else {
+                        io.print("Database error: Tag(s) could not be added!");
+                    }
                 }
             }
         }
@@ -146,13 +203,13 @@ public class ReadingTipUi {
                         newTags[j - 1] = tags[j];
                     }
                 }
-                io.print("Tag was deleted.");
+                io.print("Tag marked for deletion.");
                 found = true;
                 break;
             }
         }
         if (!found) {
-            io.print("Not found.");
+            io.print("Tag not found.");
             return askForTagsToRemove(tags);
         }
         if (newTags.length > 0) {
@@ -161,56 +218,39 @@ public class ReadingTipUi {
         return newTags;
     }
 
-    private void markAsRead() throws Exception {
+    private void markAsRead() {
         String id = io.readLine("What is the id of the reading tip you want to mark as read?");
         if (checkIfInputIsNumber(id)) {
             if (getOneTip(id) == null) {
                 io.print("Reading tip doesn't exist.");
             } else if (checkIfInputIsNumber(id)) {
-                service.markAsRead(id);
+                boolean success = service.markAsRead(id);
                 io.print(getOneTip(id).toString());
+                
+                if (success) {
+                    io.print("Reading tip was marked as read!"); 
+                } else {
+                    io.print("Database error: Reading tip could not be marked as read!");
+                }
             }
         }
     }
 
-    private void markAsUnread() throws Exception {
+    private void markAsUnread() {
         String id = io.readLine("What is the id of the reading tip you want to mark as unread?");
         if (checkIfInputIsNumber(id)) {
             if (getOneTip(id) == null) {
                 io.print("Reading tip doesn't exist.");
             } else {
-                service.markAsUnread(id);
+                boolean success = service.markAsUnread(id);
                 io.print(getOneTip(id).toString());
-            }
-        }
-    }
-
-    private void createReadingTip() throws Exception {
-        String title = io.readLine("What is the title of the reading tip?");
-        if (title.equals("")) {
-            System.out.println("Invalid input");
-            title = io.readLine("What is the title of the reading tip?");
-            if (title.equals("")) {
-                System.out.println("Invalid input");
-            }
-        }
-        if (!title.equals("")) {
-            printTypes();
-            String type = io.readLine("What kind of reading tip is it?");
-            if (type.equals("")) {
-                System.out.println("Invalid input");
-                type = io.readLine("What kind of reading tip is it?");
-                if (type.equals("")) {
-                    System.out.println("Invalid input");
+                
+                if (success) {
+                    io.print("Reading tip was marked as unread!"); 
+                } else {
+                    io.print("Database error: Reading tip could not be marked as unread!");
                 }
             }
-            if (!type.equals("")) {
-                String[] additionalInfo = askMoreInfoByType(type.toLowerCase());
-                String[] tags = askForTags(maxTags);
-                ReadingTip tip = service.createTip(type.toLowerCase(), title,
-                        additionalInfo[0], additionalInfo[1], tags);
-            }
-            
         }
     }
 
@@ -250,13 +290,13 @@ public class ReadingTipUi {
             if (tag.isEmpty()) {
                 break;
             }
-            
+
             if (!tags.contains(tag)) {
                 tags.add(tag);
                 i++;
             } else {
-                io.print("Tag was already added!"); 
-            } 
+                io.print("Tag was already added!");
+            }
         }
 
         String[] tagsCompact = new String[i];
@@ -304,12 +344,12 @@ public class ReadingTipUi {
         io.print("");
     }
 
-    private void getAllTips() throws Exception {
+    private void getAllTips() {
         searchResults = service.browseReadingTips();
         listSearchResults();
     }
 
-    private ReadingTip getOneTip(String id) throws Exception {
+    private ReadingTip getOneTip(String id) {
         if (checkIfInputIsNumber(id)) {
             ReadingTip tip = service.getOneTip(id);
             return tip;
@@ -317,7 +357,7 @@ public class ReadingTipUi {
         return new ReadingTip("", "");
     }
 
-    private void searchTip() throws Exception {
+    private void searchTip() {
         String searchField;
 
         while (true) {
@@ -333,12 +373,12 @@ public class ReadingTipUi {
         }
 
         String searchTerm = io.readLine("Input search term:");
-        
+
         searchResults = service.searchTip(searchTerm, searchField);
         if (searchResults.isEmpty()) {
             io.print("No reading tips found.");
         }
-        
+
         listSearchResults();
     }
 
@@ -361,12 +401,11 @@ public class ReadingTipUi {
         }
     }
 
-    private void listSearchResults() throws Exception {
+    private void listSearchResults() {
         for (int i = 1; i <= searchResults.size(); i++) {
             io.print(searchResults.get(i - 1).toString());
             io.print("");
         }
-        searchResults = service.browseReadingTips();
     }
 
     private boolean checkIfInputIsNumber(String input) {
@@ -378,6 +417,5 @@ public class ReadingTipUi {
         }
         return true;
     }
-    
-    
+
 }

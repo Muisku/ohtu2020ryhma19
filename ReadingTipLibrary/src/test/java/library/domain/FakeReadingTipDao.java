@@ -22,34 +22,37 @@ public class FakeReadingTipDao implements ReadingTipDao {
     }
 
     @Override
-    public void addTip(ReadingTip bookTip) throws Exception {
+    public boolean addTip(ReadingTip bookTip){
         bookTip.setId(nextId);
         readingTips.add(bookTip);
         nextId++;
+        return true;
     }
 
     @Override
-    public List<ReadingTip> getAllTips() throws Exception {
+    public List<ReadingTip> getAllTips(){
         return readingTips;
     }
 
 
     @Override
-    public void removeTip(String id) throws Exception {
+    public boolean removeTip(String id){
         for (int i = 0; i < readingTips.size(); i++) {
             if (readingTips.get(i).getId() == Integer.parseInt(id)) {
                 readingTips.remove(i);
             }
         }
+        
+        return true;
     }
 
     @Override
-    public List<ReadingTip> searchTip(String searchTerm, String searchType) throws Exception {
+    public List<ReadingTip> searchTip(String searchTerm, String searchType){
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void modifyTip(String id, String title, String info1, String info2) throws Exception {
+    public boolean modifyTip(String id, String title, String info1, String info2){
         for (ReadingTip r : readingTips) {
             if (r.getId() == Integer.parseInt(id)) {
                 if (!title.isEmpty()) {
@@ -63,10 +66,12 @@ public class FakeReadingTipDao implements ReadingTipDao {
                 }
             }
         }
+        
+        return true;
     }
 
     @Override
-    public ReadingTip getOneTip(String id) throws Exception {
+    public ReadingTip getOneTip(String id) {
         for (ReadingTip r : readingTips) {
             if (r.getId() == Integer.parseInt(id)) {
                 return r;
@@ -76,21 +81,24 @@ public class FakeReadingTipDao implements ReadingTipDao {
     }
 
     @Override
-    public void markAsRead(String id) {
+    public boolean markAsRead(String id) {
         for (ReadingTip r : readingTips) {
             if (r.getId() == Integer.parseInt(id)) {
                 r.setRead(1);
             }
         }
+        
+        return true;
     }
 
     @Override
-    public void markAsUnread(String id) {
+    public boolean markAsUnread(String id) {
         for (ReadingTip r : readingTips) {
             if (r.getId() == Integer.parseInt(id)) {
                 r.setRead(0);
             }
         }
+        return true;
     }
     
     @Override
@@ -99,7 +107,7 @@ public class FakeReadingTipDao implements ReadingTipDao {
     }
 
     @Override
-    public void modifyTags(String id, String[] newTags, boolean replace) throws Exception {
+    public boolean modifyTags(String id, String[] newTags, boolean replace){
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

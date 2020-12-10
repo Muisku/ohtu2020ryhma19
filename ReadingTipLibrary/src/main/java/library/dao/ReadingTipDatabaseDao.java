@@ -23,81 +23,89 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     public ReadingTipDatabaseDao(String databaseAddress) {
         this.databaseAddress = databaseAddress;
     }
-    
+
     private Connection getConnection() throws SQLException {
-        
+
         Connection conn = DriverManager.getConnection(databaseAddress);
-        
+
         Statement foreignKeysOn = conn.createStatement();
         foreignKeysOn.execute("PRAGMA foreign_keys = ON");
-        
-        return conn;  
+
+        return conn;
     }
 
     @Override
-    public List<ReadingTip> getAllTips() throws Exception {
+    public List<ReadingTip> getAllTips() {
 
-        Connection conn = getConnection();
         List<ReadingTip> readingTips = new ArrayList<>();
 
-        try {
+        try (Connection conn = getConnection()) {
             Statement stmt = conn.createStatement();
             ResultSet result = stmt.executeQuery("SELECT * FROM ReadingTip");
             readingTips = createListFromResult(result);
 
-        } catch (Exception e) {
-            System.out.println("Database is empty.");
-        }
+            conn.close();
 
-        conn.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return readingTips;
     }
 
     @Override
-    public List<ReadingTip> searchTip(String searchTerm, String searchField) throws Exception {
-        Connection conn = getConnection();
-        List<ReadingTip> readingTips = new ArrayList<>();
+    public List<ReadingTip> searchTip(String searchTerm, String searchField) {
 
-        if (!searchField.equals("tags")) {
-            try {
+        List<ReadingTip> readingTips = new ArrayList<>();
+        try (Connection conn = getConnection()) {
+
+            if (!searchField.equals("tags")) {
+
                 String stmt = createStatementByField(searchField, searchTerm);
                 PreparedStatement p = conn.prepareStatement(stmt);
 
                 ResultSet result = p.executeQuery();
                 readingTips = createListFromResult(result);
-            } catch (Exception e) {
-                System.err.println("Searching tip failed:" + e.getMessage());
+
+            } else if (searchField.equals("tags")) {
+                int tagId = getTagId(searchTerm);
+                PreparedStatement stmt = conn.prepareStatement(
+                        "SELECT * FROM ReadingTip_Tag WHERE tag_id = ?");
+                stmt.setInt(1, tagId);
+                ResultSet result = stmt.executeQuery();
+                readingTips = createListFromIds(result);
             }
-        } else if (searchField.equals("tags")) {
-            int tagId = getTagId(searchTerm);
-            PreparedStatement stmt = conn.prepareStatement(
-                    "SELECT * FROM ReadingTip_Tag WHERE tag_id = ?");
-            stmt.setInt(1, tagId);
-            ResultSet result = stmt.executeQuery();
-            readingTips = createListFromIds(result);
+
+            conn.close();
+
+        } catch (SQLException se) {
+            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        conn.close();
         return readingTips;
     }
 
     @Override
-    public ReadingTip getOneTip(String id) throws Exception {
-        Connection conn = getConnection();
+    public ReadingTip getOneTip(String id) {
+
         List<ReadingTip> readingTips = new ArrayList<>();
-        try {
+        try (Connection conn = getConnection()) {
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM ReadingTip WHERE id = ?");
             stmt.setInt(1, Integer.parseInt(id));
 
             ResultSet result = stmt.executeQuery();
             readingTips = createListFromResult(result);
             result.close();
-        } catch (SQLException e) {
-            System.err.println("Getting one tip failed: " + e.getMessage());
+            conn.close();
+        } catch (SQLException se) {
+            System.err.println("Getting one tip failed: " + se.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        conn.close();
 
         if (readingTips.size() == 1) {
             return readingTips.get(0);
@@ -105,10 +113,10 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         return null;
     }
 
-    private int getTagId(String tag) throws Exception {
-        Connection conn = getConnection();
+    private int getTagId(String tag) {
+
         List<Integer> tags = new ArrayList<>();
-        try {
+        try (Connection conn = getConnection()) {
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Tag WHERE name = ?");
             stmt.setString(1, tag);
 
@@ -116,11 +124,13 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
             while (result.next()) {
                 tags.add(result.getInt("id"));
             }
+
+            conn.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
         } catch (Exception e) {
             System.err.println("Getting tag id failed:" + e.getMessage());
         }
-
-        conn.close();
 
         if (tags.size() == 1) {
             return tags.get(0);
@@ -129,32 +139,40 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     }
 
     @Override
-    public void addTip(ReadingTip readingTip) throws Exception {
-        Connection conn = getConnection();
-        createSchemaIfNotExists(conn);
+    public boolean addTip(ReadingTip readingTip) {
 
-        String[] tags = readingTip.getTags();
-        int[] tagIds = new int[tags.length];
+        try (Connection conn = getConnection()) {
 
-        for (int i = 0; i < tags.length; i++) {
-            tagIds[i] = createTagIfNotExists(tags[i], conn);
+            createSchemaIfNotExists(conn);
+
+            String[] tags = readingTip.getTags();
+            int[] tagIds = new int[tags.length];
+
+            for (int i = 0; i < tags.length; i++) {
+                tagIds[i] = createTagIfNotExists(tags[i], conn);
+            }
+
+            PreparedStatement stmt = conn.prepareStatement(
+                    "INSERT INTO ReadingTip (type, title, info1, info2) "
+                    + "VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+
+            stmt.setString(1, readingTip.getType());
+            stmt.setString(2, readingTip.getTitle());
+            stmt.setString(3, readingTip.getMoreInfo1());
+            stmt.setString(4, readingTip.getMoreInfo2());
+            stmt.execute();
+
+            int readingTipId = (int) stmt.getGeneratedKeys().getLong(1); // retrieves the id of the most recent insert
+
+            linkTagsWithReadingTip(tagIds, readingTipId, conn);
+
+            conn.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+            return false;
         }
 
-        PreparedStatement stmt = conn.prepareStatement(
-                "INSERT INTO ReadingTip (type, title, info1, info2) "
-                + "VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-
-        stmt.setString(1, readingTip.getType());
-        stmt.setString(2, readingTip.getTitle());
-        stmt.setString(3, readingTip.getMoreInfo1());
-        stmt.setString(4, readingTip.getMoreInfo2());
-        stmt.execute();
-
-        int readingTipId = (int) stmt.getGeneratedKeys().getLong(1); // retrieves the id of the most recent insert
-
-        linkTagsWithReadingTip(tagIds, readingTipId, conn);
-
-        conn.close();
+        return true;
     }
 
     /**
@@ -166,29 +184,24 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
      * @param conn connection to database
      * @return tag id
      */
-    private int createTagIfNotExists(String tag, Connection conn) {
+    private int createTagIfNotExists(String tag, Connection conn) throws SQLException {
 
         int id = -1;
 
-        try {
-            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Tag WHERE name = ?"); //checks for tag name in the tag table
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Tag WHERE name = ?"); //checks for tag name in the tag table
+        stmt.setString(1, tag);
+        ResultSet result = stmt.executeQuery();
+
+        if (!result.next()) {  // if tag not found, create tag and get id
+            stmt = conn.prepareStatement("INSERT INTO Tag (name) "
+                    + "VALUES (?)", Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, tag);
-            ResultSet result = stmt.executeQuery();
+            stmt.execute();
 
-            if (!result.next()) {  // if tag not found, create tag and get id
-                stmt = conn.prepareStatement("INSERT INTO Tag (name) "
-                        + "VALUES (?)", Statement.RETURN_GENERATED_KEYS);
-                stmt.setString(1, tag);
-                stmt.execute();
+            id = (int) stmt.getGeneratedKeys().getLong(1); // retrieves the id of the most recent insert
 
-                id = (int) stmt.getGeneratedKeys().getLong(1); // retrieves the id of the most recent insert
-
-            } else {
-                id = result.getInt("id");
-            }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(ReadingTipDatabaseDao.class.getName()).log(Level.SEVERE, null, ex);
+        } else {
+            id = result.getInt("id");
         }
 
         return id;
@@ -221,19 +234,24 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     }
 
     @Override
-    public void removeTip(String id) throws Exception {
-        Connection conn = getConnection();
-        PreparedStatement stmt = conn.prepareStatement("DELETE FROM ReadingTip WHERE id = ?");
-        stmt.setInt(1, Integer.parseInt(id));
-        stmt.executeUpdate();
-        conn.close();
+    public boolean removeTip(String id) {
+        try (Connection conn = getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM ReadingTip WHERE id = ?");
+            stmt.setInt(1, Integer.parseInt(id));
+            stmt.executeUpdate();
+            conn.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+            return false;
+        }
+
+        return true;
     }
 
     @Override
-    public void modifyTip(String id, String newTitle, String newInfo1, String newInfo2) throws Exception {
-        Connection conn = getConnection();
+    public boolean modifyTip(String id, String newTitle, String newInfo1, String newInfo2) {
 
-        try {
+        try (Connection conn = getConnection()) {
             if (!newTitle.isEmpty()) {
                 PreparedStatement stmt
                         = conn.prepareStatement("UPDATE ReadingTip SET title = ? WHERE id = ?");
@@ -258,29 +276,43 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
                 stmt.executeUpdate();
             }
 
-        } catch (Exception e) {
-            System.err.println("Modifying tip failed: " + e.getMessage());
+            conn.close();
+
+        } catch (SQLException se) {
+            se.printStackTrace();
+            return false;
+
         }
-        conn.close();
+
+        return true;
+
     }
 
     @Override
-    public void modifyTags(String readingTipId, String[] newTags, boolean replace) throws Exception {
-        Connection conn = getConnection();
-        createSchemaIfNotExists(conn);
+    public boolean modifyTags(String readingTipId, String[] newTags, boolean replace) {
 
-        int[] tagIds = new int[newTags.length];
+        try (Connection conn = getConnection()) {
 
-        for (int i = 0; i < newTags.length; i++) {
-            tagIds[i] = createTagIfNotExists(newTags[i], conn);
+            createSchemaIfNotExists(conn);
+
+            int[] tagIds = new int[newTags.length];
+
+            for (int i = 0; i < newTags.length; i++) {
+                tagIds[i] = createTagIfNotExists(newTags[i], conn);
+            }
+
+            if (replace) {
+                removeAllTags(Integer.parseInt(readingTipId), conn);
+            }
+            linkTagsWithReadingTip(tagIds, Integer.parseInt(readingTipId), conn);
+
+            conn.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+            return false;
         }
 
-        if (replace) {
-            removeAllTags(Integer.parseInt(readingTipId), conn);
-        }
-        linkTagsWithReadingTip(tagIds, Integer.parseInt(readingTipId), conn);
-
-        conn.close();
+        return true;
     }
 
     /**
@@ -290,60 +322,62 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
 
         Statement stmt = conn.createStatement();
 
-        try {
+        stmt.execute(
+                "CREATE TABLE IF NOT EXISTS ReadingTip ("
+                + "id INTEGER PRIMARY KEY, "
+                + "type TEXT, "
+                + "title TEXT, "
+                + "info1 TEXT, "
+                + "info2 TEXT, "
+                + "read INTEGER DEFAULT 0)"); //0=not read, 1=read
 
-            stmt.execute(
-                    "CREATE TABLE IF NOT EXISTS ReadingTip ("
-                    + "id INTEGER PRIMARY KEY, "
-                    + "type TEXT, "
-                    + "title TEXT, "
-                    + "info1 TEXT, "
-                    + "info2 TEXT, "
-                    + "read INTEGER DEFAULT 0)"); //0=not read, 1=read
+        stmt.execute(
+                "CREATE TABLE IF NOT EXISTS Tag ("
+                + "id INTEGER PRIMARY KEY, "
+                + "name TEXT)");
 
-            stmt.execute(
-                    "CREATE TABLE IF NOT EXISTS Tag ("
-                    + "id INTEGER PRIMARY KEY, "
-                    + "name TEXT)");
+        stmt.execute(
+                "CREATE TABLE IF NOT EXISTS ReadingTip_Tag ("
+                + "readingtip_id INTEGER NOT NULL REFERENCES ReadingTip(id) ON DELETE CASCADE, "
+                + "tag_id INTEGER NOT NULL REFERENCES Tag(id) ON DELETE CASCADE, "
+                + "PRIMARY KEY (readingtip_id, tag_id))"
+        );
 
-            stmt.execute(
-                    "CREATE TABLE IF NOT EXISTS ReadingTip_Tag ("
-                    + "readingtip_id INTEGER NOT NULL REFERENCES ReadingTip(id) ON DELETE CASCADE, "
-                    + "tag_id INTEGER NOT NULL REFERENCES Tag(id) ON DELETE CASCADE, "
-                    + "PRIMARY KEY (readingtip_id, tag_id))"
-            );
-
-        } catch (Exception e) {
-            System.out.println("Database schema already exists.");
-        }
     }
 
     @Override
-    public void markAsRead(String id) {
-        try {
-            Connection conn = getConnection();
+    public boolean markAsRead(String id) {
+
+        try (Connection conn = getConnection()) {
+
             PreparedStatement stmt
                     = conn.prepareStatement("UPDATE ReadingTip SET read = 1 WHERE id = ?");
             stmt.setInt(1, Integer.parseInt(id));
             stmt.executeUpdate();
             conn.close();
-        } catch (Exception e) {
-            System.err.println("Failed marking tip read: " + e.getMessage());
+        } catch (SQLException se) {
+            se.printStackTrace();
+            return false;
         }
+
+        return true;
     }
 
     @Override
-    public void markAsUnread(String id) {
-        try {
-            Connection conn = getConnection();
+    public boolean markAsUnread(String id) {
+
+        try (Connection conn = getConnection()) {
             PreparedStatement stmt
                     = conn.prepareStatement("UPDATE ReadingTip SET read = 0 WHERE id = ?");
             stmt.setInt(1, Integer.parseInt(id));
             stmt.executeUpdate();
             conn.close();
-        } catch (Exception e) {
-            System.err.println("Failed marking tip unread: " + e.getMessage());
+        } catch (SQLException se) {
+            se.printStackTrace();
+            return false;
         }
+
+        return true;
     }
 
     @Override
@@ -372,7 +406,9 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     }
 
     private List<ReadingTip> createListFromResult(ResultSet result) throws Exception {
+
         List<ReadingTip> readingTips = new ArrayList<>();
+
         while (result.next()) {
             int id = result.getInt("id");
             String type = result.getString("type");
@@ -393,8 +429,9 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     }
 
     private String[] fetchTagsForReadingTip(int id) {
-        try {
-            Connection conn = getConnection();
+
+        try (Connection conn = getConnection()) {
+
             PreparedStatement stmt
                     = conn.prepareStatement("SELECT name FROM ReadingTip_Tag JOIN Tag ON tag_id = id WHERE readingtip_id = ?");
             stmt.setInt(1, id);
@@ -409,22 +446,24 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
             conn.close();
             String[] retval = new String[tags.size()];
             return tags.toArray(retval);
-        } catch (SQLException e) {
-            System.err.println("Fetching tags failed: " + e.getMessage());
+
+        } catch (SQLException se) {
+            System.err.println("Fetching tags failed: " + se.getMessage());
         }
+
         return new String[0];
     }
 
     private List<ReadingTip> createListFromIds(ResultSet result) throws Exception {
+
         List<ReadingTip> readingTips = new ArrayList<>();
+
         while (result.next()) {
             int id = result.getInt("readingtip_id");
             ReadingTip readingtip = getOneTip(Integer.toString(id));
             readingTips.add(readingtip);
         }
+
         return readingTips;
     }
-    
-    
-
 }

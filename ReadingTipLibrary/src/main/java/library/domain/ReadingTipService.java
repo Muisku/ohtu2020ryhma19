@@ -31,15 +31,15 @@ public class ReadingTipService {
      * @param info1 The content of this field will depend on the type.
      * @param info2 The content of this field will depend on the type.
      */
-    public ReadingTip createTip(String type, String title, String info1, String info2,
-            String[] tags) throws Exception {
+    public boolean createTip(String type, String title, String info1, String info2,
+            String[] tags) {
+        
         ReadingTip rt = new ReadingTip(title, type);
         rt.setMoreInfo1(info1);
         rt.setMoreInfo2(info2);
         rt.setTags(tags);
-        
-        readingTipDao.addTip(rt);
-        return rt;
+
+        return readingTipDao.addTip(rt);
     }
 
     /**
@@ -47,40 +47,39 @@ public class ReadingTipService {
      *
      * @return A list of all ReadingTips.
      */
-    public List<ReadingTip> browseReadingTips() throws Exception {
+    public List<ReadingTip> browseReadingTips() {
         List<ReadingTip> tipList = readingTipDao.getAllTips();
         return tipList;
     }
 
-    public List<ReadingTip> searchTip(String searchTerm, String searchField) throws Exception {
+    public List<ReadingTip> searchTip(String searchTerm, String searchField) {
         List<ReadingTip> tipList = readingTipDao.searchTip(searchTerm, searchField);
         return tipList;
     }
 
-    public ReadingTip getOneTip(String id) throws Exception {
+    public ReadingTip getOneTip(String id) {
         ReadingTip readingTip = readingTipDao.getOneTip(id);
         return readingTip;
     }
 
-    public void removeTip(String id) throws Exception {
-        readingTipDao.removeTip(id);
+    public boolean removeTip(String id) {
+        return readingTipDao.removeTip(id);
     }
 
-    public void modifyTip(String id, String newTitle, String newInfo1, String newInfo2)
-            throws Exception {
-        readingTipDao.modifyTip(id, newTitle, newInfo1, newInfo2);
-    }
-    
-    public void modifyTags(String id, String[] newTags, boolean replace) throws Exception {
-        readingTipDao.modifyTags(id, newTags, replace);
+    public boolean modifyTip(String id, String newTitle, String newInfo1, String newInfo2) {
+        return readingTipDao.modifyTip(id, newTitle, newInfo1, newInfo2);
     }
 
-    public void markAsRead(String id) {
-        readingTipDao.markAsRead(id);
+    public boolean modifyTags(String id, String[] newTags, boolean replace) {
+        return readingTipDao.modifyTags(id, newTags, replace);
     }
 
-    public void markAsUnread(String id) {
-        readingTipDao.markAsUnread(id);
+    public boolean markAsRead(String id) {
+        return readingTipDao.markAsRead(id);
+    }
+
+    public boolean markAsUnread(String id) {
+        return readingTipDao.markAsUnread(id);
     }
 
     public void deleteDatabaseContents() {

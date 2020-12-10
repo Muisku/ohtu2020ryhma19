@@ -8,23 +8,23 @@ import library.domain.ReadingTip;
  */
 public interface ReadingTipDao {
 
-    void addTip(ReadingTip bookTip) throws Exception;
+    boolean addTip(ReadingTip bookTip);
     
-    void removeTip(String id) throws Exception;
+    boolean removeTip(String id);
     
-    void modifyTip(String id, String title, String info1, String info2) throws Exception;
+    boolean modifyTip(String id, String title, String info1, String info2);
     
-    void modifyTags(String id, String[] newTags, boolean replace) throws Exception;
+    boolean modifyTags(String id, String[] newTags, boolean replace);
     
-    ReadingTip getOneTip(String id) throws Exception;
+    ReadingTip getOneTip(String id);
 
-    List<ReadingTip> getAllTips() throws Exception;
+    List<ReadingTip> getAllTips();
 
-    List<ReadingTip> searchTip(String searchTerm, String searchField) throws Exception;
+    List<ReadingTip> searchTip(String searchTerm, String searchField);
 
-    public void markAsRead(String id);
+    public boolean markAsRead(String id);
     
-    public void markAsUnread(String id);
+    public boolean markAsUnread(String id);
     
     public void deleteDatabaseContents();
 }
