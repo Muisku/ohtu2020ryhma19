@@ -124,4 +124,13 @@ public class ReadingTipDatabaseDaoTest {
         assertEquals("aihe1", testDbDao.getOneTip("1").getTags()[0]);
         assertEquals("aihe2", testDbDao.getOneTip("1").getTags()[1]);
     }
+    
+    @Test
+    public void modifyingTagsOfCertainReadingTipSavesTheModificationsToTheDatabase() throws Exception {
+        String[] newTags = new String[]{"aihe4"};
+        testDbDao.modifyTags("1", newTags, false);
+        assertEquals("aihe4", testDbDao.getOneTip("1").getTags()[2]);
+        testDbDao.modifyTags("1", newTags, true);
+        assertEquals("aihe4", testDbDao.getOneTip("1").getTags()[0]);
+    }
 }
