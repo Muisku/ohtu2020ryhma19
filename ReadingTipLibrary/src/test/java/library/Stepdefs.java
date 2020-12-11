@@ -62,6 +62,7 @@ public class Stepdefs {
     public void responseContains(String expectedOutput) {
         boolean contains = false;
         for (String s : io.getPrints()) {
+            //System.out.println(s);
             if (s.contains(expectedOutput)) {
                 contains = true;
             }
@@ -160,9 +161,26 @@ public class Stepdefs {
         inputLines.add(author);
     }
 
+    @When("enter is pressed")
+    public void enterPressed(){
+        inputLines.add("");
+        io = new StubIo(inputLines);
+        ui = new ReadingTipUi(io);
+        ui.start(service);
+    }
+    
     @When("new isbn {string} is given")
     public void modifiedIsbn(String isbn) throws Exception{
         inputLines.add(isbn);
+
+	io = new StubIo(inputLines);
+        ui = new ReadingTipUi(io);
+        ui.start(service);
+    }
+    
+    @When("new url {string} is given")
+    public void modifiedUrl(String url) throws Exception{
+        inputLines.add(url);
 
 	io = new StubIo(inputLines);
         ui = new ReadingTipUi(io);
