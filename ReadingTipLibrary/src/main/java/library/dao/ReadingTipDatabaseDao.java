@@ -162,7 +162,8 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
             stmt.setString(4, readingTip.getMoreInfo2());
             stmt.execute();
 
-            int readingTipId = (int) stmt.getGeneratedKeys().getLong(1); // retrieves the id of the most recent insert
+            // retrieves the id of the most recent insert
+            int readingTipId = (int) stmt.getGeneratedKeys().getLong(1);
 
             linkTagsWithReadingTip(tagIds, readingTipId, conn);
 
@@ -187,8 +188,9 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     private int createTagIfNotExists(String tag, Connection conn) throws SQLException {
 
         int id = -1;
-
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Tag WHERE name = ?"); //checks for tag name in the tag table
+        
+        //checks for tag name in the tag table
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Tag WHERE name = ?");
         stmt.setString(1, tag);
         ResultSet result = stmt.executeQuery();
 
@@ -198,7 +200,8 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
             stmt.setString(1, tag);
             stmt.execute();
 
-            id = (int) stmt.getGeneratedKeys().getLong(1); // retrieves the id of the most recent insert
+            // retrieves the id of the most recent insert
+            id = (int) stmt.getGeneratedKeys().getLong(1);
 
         } else {
             id = result.getInt("id");
@@ -216,9 +219,11 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
      * @param conn connection to database
      * @throws SQLException exception
      */
-    private void linkTagsWithReadingTip(int[] tagIds, int readingTipId, Connection conn) throws SQLException {
+    private void linkTagsWithReadingTip(
+            int[] tagIds, int readingTipId, Connection conn) throws SQLException {
         for (int tagId : tagIds) {
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO ReadingTip_Tag (readingtip_id, tag_id) "
+            PreparedStatement stmt = conn.prepareStatement(
+                    "INSERT INTO ReadingTip_Tag (readingtip_id, tag_id) "
                     + "VALUES (?,?)");
             stmt.setInt(1, readingTipId);
             stmt.setInt(2, tagId);
@@ -433,7 +438,8 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         try (Connection conn = getConnection()) {
 
             PreparedStatement stmt
-                    = conn.prepareStatement("SELECT name FROM ReadingTip_Tag JOIN Tag ON tag_id = id WHERE readingtip_id = ?");
+                    = conn.prepareStatement("SELECT name FROM ReadingTip_Tag JOIN"
+                            + " Tag ON tag_id = id WHERE readingtip_id = ?");
             stmt.setInt(1, id);
             ResultSet result = stmt.executeQuery();
 
