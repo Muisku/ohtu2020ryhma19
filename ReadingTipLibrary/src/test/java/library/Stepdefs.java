@@ -18,8 +18,7 @@ public class Stepdefs {
     List<String> inputLines;
     StubIo io;
     ReadingTipService service;
-    
-    
+        
     @Before
     public void setup(){
         inputLines = new ArrayList<>();     
@@ -37,8 +36,7 @@ public class Stepdefs {
     public void commandAddIsSelected() {
         inputLines.add("A");
     }
-
-    
+   
     @When("a reading tip {string} with type {string} is created")
     public void newReadingTipWithTypeIsCreated(String title, String type) throws Exception {
         inputLines.add(title);
@@ -51,8 +49,7 @@ public class Stepdefs {
         ui = new ReadingTipUi(io);
         ui.start(service);
     }
-   
-    
+      
     @Then("system will respond with {string}")
     public void readingTipCanBeFound(String expectedOutput) {
         assertTrue(io.getPrints().contains(expectedOutput));
@@ -111,28 +108,6 @@ public class Stepdefs {
         inputLines.add("tag");
         inputLines.add("");
     }
-
-//    @Given("reading tip with title {string}, type {string}, and url {string} is created")
-//    public void videoOrBlogpostReadingTipWithTitleAndTypeIsCreated(String title, String type, String url) throws Exception {
-//	inputLines.add("A");
-//	inputLines.add(title);
-//        inputLines.add(type);
-//        inputLines.add(url);
-//        inputLines.add("isbn");
-//        inputLines.add("tag");
-//        inputLines.add("");
-//    }
-//    
-//    @Given("reading tip with title {string}, type {string}, and host {string} is created")
-//    public void podcastReadingTipWithTitleAndTypeIsCreated(String title, String type, String host) throws Exception {
-//	inputLines.add("A");
-//	inputLines.add(title);
-//        inputLines.add(type);
-//        inputLines.add(host);
-//        inputLines.add("isbn");
-//        inputLines.add("tag");
-//        inputLines.add("");
-//    }
     
     @Given("command delete is selected")
     public void commandDeleteIsSelected() {
@@ -161,8 +136,7 @@ public class Stepdefs {
     @Given("command search is selected")
     public void commandSearchIsSelected() {
         inputLines.add("S");
-    }
-   
+    }   
     
     @Given("search criteria {string} is selected")
     public void searchCriteriaIsSelected(String criteria) {
@@ -177,29 +151,32 @@ public class Stepdefs {
         ui = new ReadingTipUi(io);
         ui.start(service);
     }
-
     
     @Given("command tags is selected")
     public void commandTagsIsSelected(){
         inputLines.add("T");
     }
+    
     @Given("choose add or remove {string} is given")
     public void tagOptionIsSelected(String option){
         inputLines.add(option);
     }
+    
     @When("tags {string} is given")
     public void addTagToTip(String tag) throws Exception{
         inputLines.add(tag);
     }
+    
     @Given("command modify is selected")
     public void commandModifyIsSelected(){
         inputLines.add("M");
-
     }
+    
     @Given("new title {string} is given")
     public void modifiedTitle(String title){
         inputLines.add(title);
     }
+    
     @Given("new author {string} is given")
     public void modifiedAuthor(String author){
         inputLines.add(author);
@@ -236,13 +213,5 @@ public class Stepdefs {
         inputLines.add("R");
         inputLines.add(id);
     }
-
-
-//    @Then("a reading tip {string} with type {string} is printed")
-//    public void systemWillRespondWith(String title, String type) {
-//        assertTrue(io.getPrints().contains(title));
-//        assertTrue(io.getPrints().contains(type));
-//    }
-
 }
 

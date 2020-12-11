@@ -27,9 +27,9 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     /**
      * Establishes database connection.
      * Executes PRAGMA statement needed to enable cascade on delete.
-     * 
+     *
      * @return connection
-     * @throws SQLException 
+     * @throws SQLException e
      */
 
     private Connection getConnection() throws SQLException {
@@ -44,7 +44,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     
     /**
      * Queries the database for all reading tips.
-     * 
+     *
      * @return list of reading tips
      */
 
@@ -71,10 +71,10 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     
     /**
      * Searches for reading tips with given search term and field.
-     * 
-     * @param searchTerm
-     * @param searchField
-     * @return 
+     *
+     * @param searchTerm term for search
+     * @param searchField field of the search
+     * @return list of reading tips
      */
 
     @Override
@@ -113,8 +113,8 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     
     /**
      * Queries the database for a reading tip with the given id.
-     * 
-     * @param id
+     *
+     * @param id id
      * @return reading tip matching the id
      */
 
@@ -170,8 +170,8 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     /**
      * Creates a database entry for the reading tip 
      * from the given ReadingTip object.
-     * 
-     * @param readingTip
+     *
+     * @param readingTip reading tip
      * @return true if creation succeeds, false if fails
      */
 
@@ -269,11 +269,11 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     }
     
     /**
-     * Removes all tags associated with a given reading tip id
-     * 
-     * @param readingTipId
-     * @param conn
-     * @throws SQLException 
+     * Removes all tags associated with a given reading tip id.
+     *
+     * @param readingTipId id of the reading tip
+     * @param conn connection
+     * @throws SQLException e
      */
 
     private void removeAllTags(int readingTipId, Connection conn) throws SQLException {
@@ -284,9 +284,9 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     }
     
     /**
-     * Removes database entry matching the given id
-     * 
-     * @param id
+     * Removes database entry matching the given id.
+     *
+     * @param id id
      * @return true if deletion succeeds, false if fails
      */
 
@@ -306,12 +306,12 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     }
     
     /**
-     * Updates an existing database entry if new values were given
-     * 
-     * @param id
-     * @param newTitle
-     * @param newInfo1
-     * @param newInfo2
+     * Updates an existing database entry if new values were given.
+     *
+     * @param id id
+     * @param newTitle new title for the reading tip
+     * @param newInfo1 new info1 for the reading tip
+     * @param newInfo2 new info2 for the reading tip
      * @return true if update succeeds, false if fails
      */
 
@@ -356,11 +356,11 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     }
     
     /**
-     * Updates reading tip-tag associations
-     * 
-     * @param readingTipId
-     * @param newTags
-     * @param replace
+     * Updates reading tip-tag associations.
+     *
+     * @param readingTipId id of the reading tip
+     * @param newTags new tags
+     * @param replace replace
      * @return true if update succeeds, false if fails
      */
 
@@ -418,13 +418,13 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
                 + "tag_id INTEGER NOT NULL REFERENCES Tag(id) ON DELETE CASCADE, "
                 + "PRIMARY KEY (readingtip_id, tag_id))"
         );
-
+        
     }
     
     /**
-     * Changes the read value of given reading tip to 1
-     * 
-     * @param id
+     * Changes the read value of given reading tip to 1.
+     *
+     * @param id id
      * @return true if succeeds, false if fails
      */
 
@@ -447,9 +447,9 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     }
     
     /**
-     * Changes the read value of given reading tip to 0
-     * 
-     * @param id
+     * Changes the read value of given reading tip to 0.
+     *
+     * @param id id
      * @return true if succeeds, false if fails
      */
 
@@ -471,7 +471,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     }
     
     /**
-     * Deletes the database file
+     * Deletes the database file.
      * 
      */
 
@@ -485,9 +485,9 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     
     /**
      * Builds a different query string based on search field and term.
-     * 
-     * @param searchField
-     * @param searchTerm
+     *
+     * @param searchField field for search
+     * @param searchTerm term for search
      * @return built string
      */
 
@@ -509,11 +509,11 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     }
     
     /**
-     * Transforms database query results into a list of ReadingTip objects
-     * 
-     * @param result
+     * Transforms database query results into a list of ReadingTip objects.
+     *
+     * @param result result
      * @return results as a list of ReadingTip Objects
-     * @throws Exception 
+     * @throws Exception e
      */
 
     private List<ReadingTip> createListFromResult(ResultSet result) throws Exception {
@@ -540,9 +540,9 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     }
     
     /**
-     * Fetches all the tags associated with the given reading tip id
-     * 
-     * @param id
+     * Fetches all the tags associated with the given reading tip id.
+     *
+     * @param id id
      * @return tags in a String array
      */
 
