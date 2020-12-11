@@ -35,12 +35,13 @@ public class ReadingTipDatabaseDaoTest {
         
         String[] tags1 = new String[]{"aihe1", "aihe2"};
         String[] tags2 = new String[]{"aihe1", "aihe3"};        
-        String[] tags3 = new String[]{"aihe3"};        
+        String[] tags3 = new String[]{"aihe3"}; 
+  
         
         testikirja1.setTags(tags1);
         testikirja2.setTags(tags2);
         testikirja3.setTags(tags3);
-
+ 
         testDbDao.addTip(testikirja1);
         testDbDao.addTip(testikirja2);
         testDbDao.addTip(testikirja3);  
@@ -169,4 +170,39 @@ public class ReadingTipDatabaseDaoTest {
         testDbDao.modifyTags("1", newTags, true);
         assertEquals("aihe4", testDbDao.getOneTip("1").getTags()[0]);
     }
+    
+    @Test
+    public void searchingByAuthor() throws Exception{
+    readingTips = testDbDao.searchTip("Taijan kirja", "title");
+        assertEquals("Teppo Testaaja", readingTips.get(0).getMoreInfo1());
+        assertEquals(1, readingTips.size());
+    }
+    
+    @Test
+    public void searchingByTitile()throws Exception{
+        readingTips = testDbDao.searchTip("Taijan kirja", "title");
+        assertEquals("Taijan kirja", readingTips.get(0).getTitle());
+        assertEquals(1, readingTips.size());
+    }
+    @Test
+    public void searchingByType() throws Exception{
+        readingTips = testDbDao.searchTip("book", "type");
+        assertEquals("Taijan kirja", readingTips.get(0).getTitle());
+        assertEquals("book", readingTips.get(0).getType());
+        assertEquals("Testikirja 2", readingTips.get(1).getTitle());
+        assertEquals("book", readingTips.get(1).getType());
+        assertEquals("Testikirja 3", readingTips.get(2).getTitle());
+        assertEquals("book", readingTips.get(2).getType());
+        
+        assertEquals(3, readingTips.size());
+    }
+    @Test
+    public void searchingByTags()throws Exception{
+        readingTips = testDbDao.searchTip("aihe1", "tags");
+        assertEquals("Taijan kirja", readingTips.get(0).getTitle());
+        assertEquals("Testikirja 2", readingTips.get(1).getTitle());
+        assertEquals(2, readingTips.size());
+    }
+    
+    
 }

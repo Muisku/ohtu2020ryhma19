@@ -30,7 +30,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
 
         Statement foreignKeysOn = conn.createStatement();
         foreignKeysOn.execute("PRAGMA foreign_keys = ON");
-
+        createSchemaIfNotExists(conn);
         return conn;
     }
 

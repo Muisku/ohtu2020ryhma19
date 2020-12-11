@@ -30,7 +30,7 @@ public class ReadingTipUi {
     public void start(ReadingTipService rts) {
 
         service = rts;
-        searchResults = service.browseReadingTips();
+        //searchResults = service.browseReadingTips();
 
         io.print("Hello user!");
 
