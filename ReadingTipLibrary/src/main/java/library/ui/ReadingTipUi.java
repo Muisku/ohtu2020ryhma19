@@ -381,7 +381,7 @@ public class ReadingTipUi {
             String option = io.readLine("");
             if (option.equals("r")) {
                 searchTerm = "1";
-            } else if (option.equals("u")){
+            } else if (option.equals("u")) {
                 searchTerm = "0";
             } else {
                 io.print("Invalid command!");
