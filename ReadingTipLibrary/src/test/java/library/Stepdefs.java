@@ -74,7 +74,7 @@ public class Stepdefs {
     public void responseContainsXTimes(String expectedOutput, int times) {
         int contains = 0;
         for (String s : io.getPrints()) {
-            //System.out.println(s);
+            System.out.println(s);
             if (s.contains(expectedOutput)) {
                 contains++;
             }

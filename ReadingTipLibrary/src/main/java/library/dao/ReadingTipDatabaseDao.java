@@ -23,6 +23,14 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
     public ReadingTipDatabaseDao(String databaseAddress) {
         this.databaseAddress = databaseAddress;
     }
+    
+    /**
+     * Establishes database connection.
+     * Executes PRAGMA statement needed to enable cascade on delete.
+     * 
+     * @return connection
+     * @throws SQLException 
+     */
 
     private Connection getConnection() throws SQLException {
 
@@ -33,6 +41,12 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         createSchemaIfNotExists(conn);
         return conn;
     }
+    
+    /**
+     * Queries the database for all reading tips.
+     * 
+     * @return list of reading tips
+     */
 
     @Override
     public List<ReadingTip> getAllTips() {
@@ -54,6 +68,14 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
 
         return readingTips;
     }
+    
+    /**
+     * Searches for reading tips with given search term and field.
+     * 
+     * @param searchTerm
+     * @param searchField
+     * @return 
+     */
 
     @Override
     public List<ReadingTip> searchTip(String searchTerm, String searchField) {
@@ -88,6 +110,13 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
 
         return readingTips;
     }
+    
+    /**
+     * Queries the database for a reading tip with the given id.
+     * 
+     * @param id
+     * @return reading tip matching the id
+     */
 
     @Override
     public ReadingTip getOneTip(String id) {
@@ -112,7 +141,7 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         }
         return null;
     }
-
+    
     private int getTagId(String tag) {
 
         List<Integer> tags = new ArrayList<>();
@@ -137,6 +166,14 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         }
         return 0;
     }
+    
+    /**
+     * Creates a database entry for the reading tip 
+     * from the given ReadingTip object.
+     * 
+     * @param readingTip
+     * @return true if creation succeeds, false if fails
+     */
 
     @Override
     public boolean addTip(ReadingTip readingTip) {
@@ -230,6 +267,14 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
             stmt.execute();
         }
     }
+    
+    /**
+     * Removes all tags associated with a given reading tip id
+     * 
+     * @param readingTipId
+     * @param conn
+     * @throws SQLException 
+     */
 
     private void removeAllTags(int readingTipId, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM ReadingTip_Tag "
@@ -237,6 +282,13 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         stmt.setInt(1, readingTipId);
         stmt.executeUpdate();
     }
+    
+    /**
+     * Removes database entry matching the given id
+     * 
+     * @param id
+     * @return true if deletion succeeds, false if fails
+     */
 
     @Override
     public boolean removeTip(String id) {
@@ -252,6 +304,16 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
 
         return true;
     }
+    
+    /**
+     * Updates an existing database entry if new values were given
+     * 
+     * @param id
+     * @param newTitle
+     * @param newInfo1
+     * @param newInfo2
+     * @return true if update succeeds, false if fails
+     */
 
     @Override
     public boolean modifyTip(String id, String newTitle, String newInfo1, String newInfo2) {
@@ -292,6 +354,15 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         return true;
 
     }
+    
+    /**
+     * Updates reading tip-tag associations
+     * 
+     * @param readingTipId
+     * @param newTags
+     * @param replace
+     * @return true if update succeeds, false if fails
+     */
 
     @Override
     public boolean modifyTags(String readingTipId, String[] newTags, boolean replace) {
@@ -349,6 +420,13 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         );
 
     }
+    
+    /**
+     * Changes the read value of given reading tip to 1
+     * 
+     * @param id
+     * @return true if succeeds, false if fails
+     */
 
     @Override
     public boolean markAsRead(String id) {
@@ -367,6 +445,13 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
 
         return true;
     }
+    
+    /**
+     * Changes the read value of given reading tip to 0
+     * 
+     * @param id
+     * @return true if succeeds, false if fails
+     */
 
     @Override
     public boolean markAsUnread(String id) {
@@ -384,6 +469,11 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
 
         return true;
     }
+    
+    /**
+     * Deletes the database file
+     * 
+     */
 
     @Override
     public void deleteDatabaseContents() {
@@ -392,6 +482,14 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         File file = new File(fileName);
         file.delete();
     }
+    
+    /**
+     * Builds a different query string based on search field and term.
+     * 
+     * @param searchField
+     * @param searchTerm
+     * @return built string
+     */
 
     private String createStatementByField(String searchField, String searchTerm) {
         StringBuilder stmt = new StringBuilder();
@@ -409,6 +507,14 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
 
         return stmt.toString();
     }
+    
+    /**
+     * Transforms database query results into a list of ReadingTip objects
+     * 
+     * @param result
+     * @return results as a list of ReadingTip Objects
+     * @throws Exception 
+     */
 
     private List<ReadingTip> createListFromResult(ResultSet result) throws Exception {
 
@@ -432,6 +538,13 @@ public class ReadingTipDatabaseDao implements ReadingTipDao {
         }
         return readingTips;
     }
+    
+    /**
+     * Fetches all the tags associated with the given reading tip id
+     * 
+     * @param id
+     * @return tags in a String array
+     */
 
     private String[] fetchTagsForReadingTip(int id) {
 
