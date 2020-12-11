@@ -226,9 +226,9 @@ public class ReadingTipUi {
             } else if (checkIfInputIsNumber(id)) {
                 boolean success = service.markAsRead(id);
                 io.print(getOneTip(id).toString());
-                
+
                 if (success) {
-                    io.print("Reading tip was marked as read!"); 
+                    io.print("Reading tip was marked as read!");
                 } else {
                     io.print("Database error: Reading tip could not be marked as read!");
                 }
@@ -244,9 +244,9 @@ public class ReadingTipUi {
             } else {
                 boolean success = service.markAsUnread(id);
                 io.print(getOneTip(id).toString());
-                
+
                 if (success) {
-                    io.print("Reading tip was marked as unread!"); 
+                    io.print("Reading tip was marked as unread!");
                 } else {
                     io.print("Database error: Reading tip could not be marked as unread!");
                 }
@@ -338,6 +338,7 @@ public class ReadingTipUi {
         io.print("| (M)edia type                             |");
         io.print("| (A)uthor / host                          |");
         io.print("| (I)SBN                                   |");
+        io.print("| (R)ead                                   |");
         io.print("| Ta(G)s                                   |");
         io.print("| Leave empty to search in all fields      |");
         io.print("+------------------------------------------+");
@@ -371,8 +372,23 @@ public class ReadingTipUi {
 
             io.print("Invalid command!\n");
         }
-
-        String searchTerm = io.readLine("Input search term:");
+        
+        String searchTerm;
+        
+        if (searchField.equals("read")) {
+            io.print("Search (r)ead or (u)nread?");
+            String option = io.readLine("");
+            if (option.equals("r")) {
+                searchTerm = "1";
+            } else if (option.equals("u")){
+                searchTerm = "0";
+            } else {
+                io.print("Invalid command!");
+                return;
+            }
+        } else {
+            searchTerm = io.readLine("Input search term:");
+        }
 
         searchResults = service.searchTip(searchTerm, searchField);
         if (searchResults.isEmpty()) {
@@ -381,6 +397,7 @@ public class ReadingTipUi {
 
         listSearchResults();
     }
+    
 
     private String fieldFromUserInput(String fieldOption) {
 
@@ -392,6 +409,8 @@ public class ReadingTipUi {
             return "info1";
         } else if (fieldOption.toLowerCase().equals("i")) {
             return "info2";
+        } else if (fieldOption.toLowerCase().equals("r")) {
+            return "read";
         } else if (fieldOption.toLowerCase().equals("g")) {
             return "tags";
         } else if ((fieldOption.equals(""))) {
