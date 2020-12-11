@@ -11,7 +11,6 @@ Feature: As a user I want to be able to add tags for a reading tip
         When tags "" is given
         Then system will respond with "Give a command:"
         
-
     Scenario: Tag cannot be added to nonexisting reading tip
         Given reading tip with title "Dune", type "book", and author "Herbert" is created
         And command tags is selected

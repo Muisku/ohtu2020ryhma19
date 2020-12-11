@@ -186,6 +186,12 @@ public class Stepdefs {
         ui = new ReadingTipUi(io);
         ui.start(service);
     }
+    
+    @Given("reading tip {string} is marked as read")
+    public void readingTipMarkedRead(String id) {
+        inputLines.add("R");
+        inputLines.add(id);
+    }
 
 
 //    @Then("a reading tip {string} with type {string} is printed")
