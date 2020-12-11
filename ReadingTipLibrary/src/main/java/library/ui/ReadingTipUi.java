@@ -272,6 +272,7 @@ public class ReadingTipUi {
 
         } else if (type.equals("video")) {
             additionalInfo[0] = io.readLine("What is the URL of the video?");
+            additionalInfo[1] = "";
         }
 
         return additionalInfo;
