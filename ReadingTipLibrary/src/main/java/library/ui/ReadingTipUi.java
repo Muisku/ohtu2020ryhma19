@@ -68,14 +68,13 @@ public class ReadingTipUi {
 
     private void createReadingTip() {
         String title = io.readLine("What is the title of the reading tip?");
-        if (title.equals("")) {
+        if (title.equals("")  || !validateTextInput(title)) {
             io.print("Invalid input");
             title = io.readLine("What is the title of the reading tip?");
             if (title.equals("") || !validateTextInput(title)) {
                 io.print("Invalid input");
             }
-        }
-        if (!title.equals("") || !validateTextInput(title)) {
+        } else if (!title.equals("") || validateTextInput(title)) {
             printTypes();
             String type = io.readLine("What kind of reading tip is it?");
             if (type.equals("")  || !validateTextInput(title)) {
@@ -83,9 +82,10 @@ public class ReadingTipUi {
                 type = io.readLine("What kind of reading tip is it?");
                 if (type.equals("") || !validateTextInput(title)) {
                     io.print("Invalid input");
+                    
                 }
             }
-            if (!type.equals("")  || !validateTextInput(title)) {
+            if (!type.equals("")  || validateTextInput(title)) {
                 String[] additionalInfo = askMoreInfoByType(type.toLowerCase());
                 String[] tags = askForTags(maxTags);
                 boolean success = service.createTip(type.toLowerCase(), title,
@@ -126,16 +126,22 @@ public class ReadingTipUi {
                 io.print(getOneTip(id).toString());
                 io.print("\nLeave field empty to not modify.\n");
                 String newTitle = io.readLine("What is the new title of the reading tip?");
-                String[] otherInfo = askMoreInfoByType(getOneTip(id).getType());
+                
+                if (validateTextInput(newTitle)) {
+                    String[] otherInfo = askMoreInfoByType(getOneTip(id).getType());
 
-                boolean success = service.modifyTip(id, newTitle, otherInfo[0], otherInfo[1]);
-                io.print(getOneTip(id).toString());
+                    boolean success = service.modifyTip(id, newTitle, otherInfo[0], otherInfo[1]);
+                    io.print(getOneTip(id).toString());
 
-                if (success) {
-                    io.print("Reading tip successfully modified!");
+                    if (success) {
+                        io.print("Reading tip successfully modified!");
+                    } else {
+                        io.print("Database error: Reading tip modification failed!");
+                    }
                 } else {
-                    io.print("Database error: Reading tip modification failed!");
+                    io.print("Invalid input");
                 }
+                
             }
         }
     }
@@ -283,8 +289,8 @@ public class ReadingTipUi {
         if (valid) {
             return additionalInfo;
         }
-        System.out.println("Invalid input");
-        return  new String[2];
+        io.print("Invalid input");
+        return  new String[]{"", ""};
     }
 
     private String[] askForTags(int maxTags) {
@@ -454,7 +460,7 @@ public class ReadingTipUi {
         if (input.length() > 150) {
             return false;
         }
-        String[] forbiddenCharacters = new String[]{"?", "*", "<", ">", "[", "]", "'", "&", "+", "="};
+        String[] forbiddenCharacters = new String[]{"?", "*", "<", ">", "[", "]", "'", "&", "="};
         
         for (String c : forbiddenCharacters) {
             if (input.contains(c)) {

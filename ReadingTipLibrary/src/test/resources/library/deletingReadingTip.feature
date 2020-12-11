@@ -11,3 +11,8 @@ Feature: As a user, I can delete a reading tip
         Given command delete is selected
         When reading tip id "198" is given
         Then system will respond with "Reading tip doesn't exist."
+
+    Scenario: user cannot delete tip with incorrect id
+        Given command delete is selected
+        When reading tip id "x" is given
+        Then system will respond with "Invalid input"

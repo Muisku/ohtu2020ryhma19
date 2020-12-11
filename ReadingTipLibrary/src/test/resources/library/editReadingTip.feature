@@ -16,7 +16,7 @@ Feature: As a user I want to be able to edit my reading tip
     When reading tip id "99" is given
     Then system will respond with "Reading tip doesn't exist."
 
-    Scenario: Readint tip is unchanged if user does not enter values
+    Scenario: Reading tip is unchanged if user does not enter values
     Given reading tip with title "Dune", type "book", and extra info "Herbert" is created
     Given command modify is selected
     And reading tip id "1" is given
@@ -24,4 +24,9 @@ Feature: As a user I want to be able to edit my reading tip
     And new author "" is given
     And new isbn "" is given
     Then system's response contains "Title: Dune"
-    
+
+    Scenario: User cannot modify reading tip with invalid id
+    Given reading tip with title "Dune", type "book", and extra info "Herbert" is created
+    And command modify is selected
+    When reading tip id "x" is given
+    Then system will respond with "Invalid input"
