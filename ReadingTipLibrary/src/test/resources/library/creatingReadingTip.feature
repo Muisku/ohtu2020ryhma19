@@ -1,5 +1,5 @@
 @run
-Feature: As a user I want to be able to create a new reading tip
+Feature: As a user, I can create a reading tip with type and title
 
     Scenario: Create a book tip
         Given command add is selected

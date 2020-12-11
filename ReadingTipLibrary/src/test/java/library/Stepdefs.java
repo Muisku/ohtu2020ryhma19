@@ -69,6 +69,29 @@ public class Stepdefs {
         }
         assertTrue(contains);
     }
+    
+    @Then("system's response contains {string} {int} times")
+    public void responseContainsXTimes(String expectedOutput, int times) {
+        int contains = 0;
+        for (String s : io.getPrints()) {
+            //System.out.println(s);
+            if (s.contains(expectedOutput)) {
+                contains++;
+            }
+        }
+        assertEquals(times, contains);
+    }
+    
+    @Then("system's response does not contain {string}")
+    public void responseDoesNotContain(String notExpectedOutput) {
+        boolean contains = false;
+        for (String s : io.getPrints()) {
+            if (s.contains(notExpectedOutput)) {
+                contains = true;
+            }
+        }
+        assertFalse(contains);
+    }
    
     @When("all reading tips are listed")
     public void readingTipIsSaved() throws Exception {
@@ -78,17 +101,38 @@ public class Stepdefs {
         ui.start(service);        
     }
 
-    @Given("reading tip with title {string}, type {string}, and author {string} is created")
-    public void readingTipWithTitleAndTypeIsCreated(String title, String type, String author) throws Exception {
+    @Given("reading tip with title {string}, type {string}, and extra info {string} is created")
+    public void ReadingTipWithTitleAndTypeIsCreated(String title, String type, String info) throws Exception {
 	inputLines.add("A");
 	inputLines.add(title);
         inputLines.add(type);
-        inputLines.add(author);
+        inputLines.add(info);
         inputLines.add("isbn");
         inputLines.add("tag");
         inputLines.add("");
     }
 
+//    @Given("reading tip with title {string}, type {string}, and url {string} is created")
+//    public void videoOrBlogpostReadingTipWithTitleAndTypeIsCreated(String title, String type, String url) throws Exception {
+//	inputLines.add("A");
+//	inputLines.add(title);
+//        inputLines.add(type);
+//        inputLines.add(url);
+//        inputLines.add("isbn");
+//        inputLines.add("tag");
+//        inputLines.add("");
+//    }
+//    
+//    @Given("reading tip with title {string}, type {string}, and host {string} is created")
+//    public void podcastReadingTipWithTitleAndTypeIsCreated(String title, String type, String host) throws Exception {
+//	inputLines.add("A");
+//	inputLines.add(title);
+//        inputLines.add(type);
+//        inputLines.add(host);
+//        inputLines.add("isbn");
+//        inputLines.add("tag");
+//        inputLines.add("");
+//    }
     
     @Given("command delete is selected")
     public void commandDeleteIsSelected() {

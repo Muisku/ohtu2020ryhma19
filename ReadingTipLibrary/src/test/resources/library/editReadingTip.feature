@@ -1,7 +1,7 @@
 @run
 Feature: As a user I want to be able to edit my reading tip
     Scenario: User can modify a reading tip
-    Given reading tip with title "Dune", type "book", and author "Herbert" is created
+    Given reading tip with title "Dune", type "book", and extra info "Herbert" is created
     Given command modify is selected
     And reading tip id "1" is given
     And new title "Dyyni" is given
@@ -11,13 +11,13 @@ Feature: As a user I want to be able to edit my reading tip
 
 
     Scenario: User cannot modify a nonexisting reading tip
-    Given reading tip with title "Dune", type "book", and author "Herbert" is created
+    Given reading tip with title "Dune", type "book", and extra info "Herbert" is created
     And command modify is selected
     When reading tip id "99" is given
     Then system will respond with "Reading tip doesn't exist."
 
     Scenario: Readint tip is unchanged if user does not enter values
-    Given reading tip with title "Dune", type "book", and author "Herbert" is created
+    Given reading tip with title "Dune", type "book", and extra info "Herbert" is created
     Given command modify is selected
     And reading tip id "1" is given
     And new title "" is given
