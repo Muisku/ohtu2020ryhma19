@@ -177,7 +177,7 @@ public class ReadingTipUi {
                     } else {
                         io.print("Database error: Tag(s) could not be added!");
                     }
-                }
+                } 
             }
         }
     }
