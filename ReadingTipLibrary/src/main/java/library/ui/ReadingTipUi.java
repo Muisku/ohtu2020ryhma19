@@ -71,21 +71,21 @@ public class ReadingTipUi {
         if (title.equals("")) {
             io.print("Invalid input");
             title = io.readLine("What is the title of the reading tip?");
-            if (title.equals("")) {
+            if (title.equals("") || !validateTextInput(title)) {
                 io.print("Invalid input");
             }
         }
-        if (!title.equals("")) {
+        if (!title.equals("") || !validateTextInput(title)) {
             printTypes();
             String type = io.readLine("What kind of reading tip is it?");
-            if (type.equals("")) {
+            if (type.equals("")  || !validateTextInput(title)) {
                 io.print("Invalid input");
                 type = io.readLine("What kind of reading tip is it?");
-                if (type.equals("")) {
+                if (type.equals("") || !validateTextInput(title)) {
                     io.print("Invalid input");
                 }
             }
-            if (!type.equals("")) {
+            if (!type.equals("")  || !validateTextInput(title)) {
                 String[] additionalInfo = askMoreInfoByType(type.toLowerCase());
                 String[] tags = askForTags(maxTags);
                 boolean success = service.createTip(type.toLowerCase(), title,
@@ -274,8 +274,17 @@ public class ReadingTipUi {
             additionalInfo[0] = io.readLine("What is the URL of the video?");
             additionalInfo[1] = "";
         }
-
-        return additionalInfo;
+        boolean valid = false;
+        for (String s : additionalInfo) {
+            if (validateTextInput(s)) {
+                valid = true;
+            }
+        }
+        if (valid) {
+            return additionalInfo;
+        }
+        System.out.println("Invalid input");
+        return  new String[2];
     }
 
     private String[] askForTags(int maxTags) {
@@ -291,13 +300,16 @@ public class ReadingTipUi {
             if (tag.isEmpty()) {
                 break;
             }
-
-            if (!tags.contains(tag)) {
-                tags.add(tag);
-                i++;
+            if (validateTextInput(tag)) {
+                if (!tags.contains(tag)) {
+                    tags.add(tag);
+                    i++;
+                } else {
+                    io.print("Tag was already added!");
+                }
             } else {
-                io.print("Tag was already added!");
-            }
+                io.print("Invalid input");
+            }          
         }
 
         String[] tagsCompact = new String[i];
@@ -434,6 +446,20 @@ public class ReadingTipUi {
         } catch (NumberFormatException ex) {
             io.print("Invalid input");
             return false;
+        }
+        return true;
+    }
+    
+    private boolean validateTextInput(String input) {
+        if (input.length() > 150) {
+            return false;
+        }
+        String[] forbiddenCharacters = new String[]{"?", "*", "<", ">", "[", "]", "'", "&", "+", "="};
+        
+        for (String c : forbiddenCharacters) {
+            if (input.contains(c)) {
+                return false;
+            }
         }
         return true;
     }
