@@ -69,20 +69,20 @@ public class ReadingTipUi {
     private void createReadingTip() {
         String title = io.readLine("What is the title of the reading tip?");
         if (title.equals("")) {
-            System.out.println("Invalid input");
+            io.print("Invalid input");
             title = io.readLine("What is the title of the reading tip?");
             if (title.equals("")) {
-                System.out.println("Invalid input");
+                io.print("Invalid input");
             }
         }
         if (!title.equals("")) {
             printTypes();
             String type = io.readLine("What kind of reading tip is it?");
             if (type.equals("")) {
-                System.out.println("Invalid input");
+                io.print("Invalid input");
                 type = io.readLine("What kind of reading tip is it?");
                 if (type.equals("")) {
-                    System.out.println("Invalid input");
+                    io.print("Invalid input");
                 }
             }
             if (!type.equals("")) {
