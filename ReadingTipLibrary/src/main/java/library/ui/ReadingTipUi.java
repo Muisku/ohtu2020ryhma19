@@ -27,11 +27,11 @@ public class ReadingTipUi {
     /**
      * Starts the user interface.
      */
-    public void start(ReadingTipService rts) {
+    public void start(ReadingTipService readingTipService) {
 
-        service = rts;
-        //searchResults = service.browseReadingTips();
+        service = readingTipService;
 
+        
         io.print("Hello user!");
 
         while (true) {
