@@ -21,6 +21,8 @@
 
 [Burndown Chart Sprint 3](https://docs.google.com/spreadsheets/d/e/2PACX-1vSdsNKufE5Dd_4WWoj46Bs-2fNq0CBqKXBNrG_Jw79fHXEye1ZnJzs5GV7_Rdo17IiIDtWc2SQMU24S/pubchart?oid=1423343708&format=image)
 
+[Loppuraportti](https://docs.google.com/document/d/1J5cjT6C20a7dWlv-gvomL_tHrREXjQrrUSJl6CV3t8I/edit?usp=sharing)
+
 ## Definition of Done
 
 * User storien hyväksymiskriteerit täyttyvät eli Cucumber-testit menevät läpi
