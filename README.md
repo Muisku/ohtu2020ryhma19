@@ -39,3 +39,4 @@ Lataa ohjelmakoodi GitHubista ja avaa asennuskansio terminaalilla. Kirjoita seur
 * java -jar build/libs/ReadingTipLibrary-all.jar
 
 
+
