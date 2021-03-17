@@ -70,11 +70,11 @@ public class ReadingTipService {
         return readingTipDao.modifyTags(id, newTags, replace);
     }
 
-    public boolean markAsRead(String id) {
+    public boolean markTipAsRead(String id) {
         return readingTipDao.markAsRead(id);
     }
 
-    public boolean markAsUnread(String id) {
+    public boolean markTipAsUnread(String id) {
         return readingTipDao.markAsUnread(id);
     }
 
